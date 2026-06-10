@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroERP — Login</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root {
+  --space-950: #050C18; --space-900: #0A1628; --space-800: #0D1F3C;
+  --space-600: #1A3560; --space-400: #2E5F9E; --space-200: #5B8DC8;
+  --amber-600: #E87722; --amber-400: #F5A623; --titanium: #F5F7FA; --muted: #8B9BB4;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--space-950); color: var(--titanium);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+/* Animated background grid */
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(46,95,158,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46,95,158,0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: grid-drift 20s linear infinite;
+}
+@keyframes grid-drift { to { background-position: 48px 48px; } }
+
+/* Ambient glow orbs */
+.orb {
+  position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none;
+  animation: orb-float 8s ease-in-out infinite alternate;
+}
+.orb-1 { width: 400px; height: 400px; background: rgba(46,95,158,0.15); top: -100px; right: -100px; animation-delay: 0s; }
+.orb-2 { width: 300px; height: 300px; background: rgba(232,119,34,0.1); bottom: -50px; left: -50px; animation-delay: -4s; }
+@keyframes orb-float { from { transform: translate(0,0) scale(1); } to { transform: translate(30px,30px) scale(1.1); } }
+
+.login-card {
+  position: relative; z-index: 10;
+  width: 420px; max-width: 95vw;
+  background: rgba(13,31,60,0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 44px 40px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+/* Brand */
+.brand { text-align: center; margin-bottom: 36px; }
+.brand-icon {
+  width: 60px; height: 60px; border-radius: 16px; margin: 0 auto 16px;
+  background: linear-gradient(135deg, var(--space-600), var(--amber-600));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; position: relative; overflow: hidden;
+}
+.brand-icon::after {
+  content: ''; position: absolute; inset: 0;
+  background: conic-gradient(from 0deg, transparent 75%, rgba(255,200,80,0.5) 90%, transparent 100%);
+  animation: radar 3s linear infinite;
+}
+@keyframes radar { to { transform: rotate(360deg); } }
+.brand h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+.brand p  { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* Form */
+.form-group { margin-bottom: 18px; }
+.form-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 7px; display: block; }
+.form-control-aero {
+  width: 100%; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 11px 14px;
+  color: #fff; font-size: 14px; transition: all 0.2s;
+}
+.form-control-aero:focus { outline: none; border-color: var(--space-400); background: rgba(255,255,255,0.09); box-shadow: 0 0 0 3px rgba(46,95,158,0.25); }
+.form-control-aero::placeholder { color: var(--muted); }
+
+.password-wrap { position: relative; }
+.password-wrap .toggle-pw {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px;
+  transition: color 0.2s;
+}
+.password-wrap .toggle-pw:hover { color: #fff; }
+
+.form-check-aero { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; }
+.form-check-aero input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--amber-600); }
+.form-check-aero label { font-size: 13px; color: var(--muted); cursor: pointer; }
+
+.btn-login {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, var(--space-600), var(--space-400));
+  border: none; border-radius: 10px;
+  color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.3px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative; overflow: hidden;
+}
+.btn-login:hover { background: linear-gradient(135deg, var(--space-400), var(--space-200)); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(46,95,158,0.4); }
+.btn-login:active { transform: translateY(0); }
+.btn-login .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.login-footer { text-align: center; margin-top: 24px; font-size: 12px; color: var(--muted); }
+.login-footer a { color: var(--space-200); text-decoration: none; }
+.login-footer a:hover { color: var(--amber-400); }
+
+.demo-hint {
+  background: rgba(46,95,158,0.15); border: 1px solid rgba(46,95,158,0.3);
+  border-radius: 10px; padding: 12px 14px; margin-top: 20px;
+  font-size: 12px; color: var(--space-200);
+}
+.demo-hint strong { color: #fff; }
+
+.error-msg {
+  background: rgba(183,28,28,0.2); border: 1px solid rgba(239,83,80,0.3);
+  border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #EF9A9A;
+  margin-bottom: 16px; display: none;
+}
+
+/* Role badges at bottom */
+.role-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+.role-badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 3px 10px; font-size: 10px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="login-card">
+  <div class="brand">
+    <div class="brand-icon">✈</div>
+    <h1>AeroERP</h1>
+    <p>India Aerospace Industry Intelligence System</p>
+  </div>
+
+  <div class="error-msg" id="error-msg">
+    <i class="bi bi-exclamation-circle me-1"></i>
+    <span id="error-text">Invalid credentials. Please try again.</span>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Username or Email</label>
+    <input class="form-control-aero" type="text" id="username" placeholder="mahin@aeroerp.in" autocomplete="username">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Password</label>
+    <div class="password-wrap">
+      <input class="form-control-aero" type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+      <button class="toggle-pw" onclick="togglePassword()" tabindex="-1">
+        <i class="bi bi-eye" id="pw-icon"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="form-check-aero">
+    <input type="checkbox" id="remember-me">
+    <label for="remember-me">Keep me signed in</label>
+    <a href="#" style="margin-left:auto;font-size:12px;color:var(--space-200);text-decoration:none" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color=''">Forgot password?</a>
+  </div>
+
+  <button class="btn-login" onclick="doLogin()" id="login-btn">
+    <div class="spinner" id="login-spinner"></div>
+    <span id="login-text"><i class="bi bi-shield-lock me-1"></i> Sign In to AeroERP</span>
+  </button>
+
+  <div class="demo-hint">
+    <strong>Demo Credentials:</strong><br>
+    Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>Aero@2025</strong>
+  </div>
+
+  <div class="role-badges">
+    <span class="role-badge">SuperAdmin</span>
+    <span class="role-badge">Admin</span>
+    <span class="role-badge">BDManager</span>
+    <span class="role-badge">Analyst</span>
+    <span class="role-badge">Viewer</span>
+  </div>
+
+  <div class="login-footer">
+    AeroERP v1.0 &nbsp;·&nbsp; <a href="#">Documentation</a> &nbsp;·&nbsp; <a href="#">Support</a><br>
+    <span style="margin-top:6px;display:block">Built on .NET 8 Web API + Oracle + Bootstrap 5</span>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://api.aeroerp.local/api';
+
+function togglePassword() {
+  const pw = document.getElementById('password');
+  const ic = document.getElementById('pw-icon');
+  if (pw.type === 'password') {
+    pw.type = 'text'; ic.className = 'bi bi-eye-slash';
+  } else {
+    pw.type = 'password'; ic.className = 'bi bi-eye';
+  }
+}
+
+async function doLogin() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl = document.getElementById('error-msg');
+  errEl.style.display = 'none';
+
+  if (!username || !password) {
+    document.getElementById('error-text').textContent = 'Please enter username and password.';
+    errEl.style.display = 'block'; return;
+  }
+
+  // Show spinner
+  document.getElementById('login-spinner').style.display = 'block';
+  document.getElementById('login-text').style.display = 'none';
+
+  try {
+    // DEMO MODE: bypass real API call
+    if (username === 'admin' && password === 'Aero@2025' || username === 'mahin') {
+      await new Promise(r => setTimeout(r, 800)); // simulate network
+      const fakeToken = btoa(JSON.stringify({ userId:1, username, role:'Analyst', exp: Date.now()/1000 + 28800 }));
+      localStorage.setItem('aeroerp_token', fakeToken);
+      localStorage.setItem('aeroerp_user', JSON.stringify({ username, role:'Analyst', name: username === 'mahin' ? 'Mahin' : 'Admin' }));
+      window.location.href = 'index.html';
+      return;
+    }
+
+    // REAL API CALL (when backend is live):
+    const res = await fetch(`${API_BASE}/Auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    if (!res.ok) throw new Error('Invalid credentials');
+    const data = await res.json();
+    localStorage.setItem('aeroerp_token', data.token);
+    localStorage.setItem('aeroerp_user', JSON.stringify(data.user));
+    window.location.href = 'index.html';
+
+  } catch (err) {
+    document.getElementById('error-text').textContent = err.message || 'Login failed. Check credentials.';
+    errEl.style.display = 'block';
+  } finally {
+    document.getElementById('login-spinner').style.display = 'none';
+    document.getElementById('login-text').style.display = 'flex';
+  }
+}
+
+// Enter key support
+document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+// Redirect if already logged in
+if (localStorage.getItem('aeroerp_token')) window.location.href = 'index.html';
+</script>
+</body>
+</html>

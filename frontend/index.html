@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroERP — India Aerospace Intelligence System</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════════
+   AEROERP — Design System
+   Palette: Deep Space (navy) × Signal Amber × Titanium White
+   Signature: Animated radar-sweep pulse on sidebar logo
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --space-950: #050C18;
+  --space-900: #0A1628;
+  --space-800: #0D1F3C;
+  --space-700: #132848;
+  --space-600: #1A3560;
+  --space-400: #2E5F9E;
+  --space-200: #5B8DC8;
+  --space-100: #A0BDE0;
+  --space-50:  #D6E4F5;
+  --amber-600: #E87722;
+  --amber-400: #F5A623;
+  --amber-200: #FFD080;
+  --signal-red:   #E53935;
+  --signal-green: #2E7D32;
+  --signal-teal:  #00796B;
+  --signal-purple:#6A1B9A;
+  --titanium:     #F5F7FA;
+  --muted:        #8B9BB4;
+  --sidebar-w:    260px;
+  --topbar-h:     60px;
+  --radius:       10px;
+  --card-shadow:  0 2px 16px rgba(5,12,24,0.45);
+  --transition:   all 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--space-900); color: var(--titanium); min-height: 100vh; overflow-x: hidden; }
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+#sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-w);
+  background: var(--space-950); border-right: 1px solid rgba(255,255,255,0.06);
+  z-index: 1000; display: flex; flex-direction: column;
+  transition: var(--transition);
+}
+#sidebar.collapsed { width: 68px; }
+#sidebar.collapsed .nav-label,
+#sidebar.collapsed .sidebar-brand-text,
+#sidebar.collapsed .sidebar-section-label { display: none; }
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  text-decoration: none; min-height: var(--topbar-h);
+}
+.brand-logo {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--space-600), var(--amber-600));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; position: relative; overflow: hidden;
+}
+/* Radar sweep animation — signature element */
+.brand-logo::after {
+  content: ''; position: absolute; inset: 0;
+  background: conic-gradient(from 0deg, transparent 75%, rgba(245,166,35,0.6) 90%, transparent 100%);
+  animation: radar-sweep 3s linear infinite;
+}
+@keyframes radar-sweep { to { transform: rotate(360deg); } }
+
+.sidebar-brand-text { line-height: 1.2; }
+.sidebar-brand-text strong { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+.sidebar-brand-text span  { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 10px 0; }
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--space-600); border-radius: 2px; }
+
+.sidebar-section-label {
+  font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 12px 20px 4px;
+}
+.nav-item { list-style: none; }
+.nav-link {
+  display: flex; align-items: center; gap: 12px; padding: 10px 20px;
+  color: var(--space-100); text-decoration: none; border-radius: 0;
+  font-size: 13.5px; font-weight: 500; transition: var(--transition);
+  border-left: 3px solid transparent; white-space: nowrap; overflow: hidden;
+}
+.nav-link:hover  { background: rgba(255,255,255,0.05); color: #fff; border-left-color: var(--space-400); }
+.nav-link.active { background: rgba(46,95,158,0.25); color: var(--amber-400); border-left-color: var(--amber-600); font-weight: 600; }
+.nav-link i { font-size: 16px; flex-shrink: 0; width: 20px; text-align: center; }
+.nav-badge {
+  margin-left: auto; background: var(--amber-600); color: #fff;
+  font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; flex-shrink: 0;
+}
+
+.sidebar-footer {
+  padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; gap: 10px;
+}
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--space-400), var(--amber-600));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+
+/* ── TOPBAR ──────────────────────────────────────────────── */
+#topbar {
+  position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h);
+  background: rgba(10,22,40,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; padding: 0 24px; gap: 12px; z-index: 999;
+  transition: var(--transition);
+}
+#sidebar.collapsed ~ #topbar, #sidebar.collapsed ~ #main-content { left: 68px; }
+#topbar .breadcrumb { background: none; margin: 0; padding: 0; font-size: 13px; }
+#topbar .breadcrumb-item, #topbar .breadcrumb-item a { color: var(--muted); text-decoration: none; }
+#topbar .breadcrumb-item.active { color: #fff; }
+
+.topbar-search {
+  flex: 1; max-width: 400px; position: relative;
+}
+.topbar-search input {
+  width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 7px 14px 7px 36px; color: #fff; font-size: 13px;
+  transition: var(--transition);
+}
+.topbar-search input:focus { outline: none; border-color: var(--space-400); background: rgba(255,255,255,0.1); }
+.topbar-search input::placeholder { color: var(--muted); }
+.topbar-search i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+
+.topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05); color: var(--space-100); display: flex;
+  align-items: center; justify-content: center; cursor: pointer; transition: var(--transition);
+  font-size: 15px; position: relative;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.icon-btn .badge-dot {
+  position: absolute; top: 5px; right: 5px; width: 8px; height: 8px;
+  background: var(--amber-600); border-radius: 50%; border: 1px solid var(--space-900);
+}
+
+/* ── MAIN CONTENT ────────────────────────────────────────── */
+#main-content {
+  position: fixed; left: var(--sidebar-w); top: var(--topbar-h);
+  right: 0; bottom: 0; overflow-y: auto; padding: 24px;
+  transition: var(--transition);
+}
+#main-content::-webkit-scrollbar { width: 6px; }
+#main-content::-webkit-scrollbar-thumb { background: var(--space-600); border-radius: 3px; }
+
+.page-view { display: none; animation: fadeIn .2s ease; }
+.page-view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── PAGE HEADER ─────────────────────────────────────────── */
+.page-header { margin-bottom: 24px; }
+.page-title { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+.page-subtitle { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+/* ── CARDS ───────────────────────────────────────────────── */
+.card-aero {
+  background: var(--space-800); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius); box-shadow: var(--card-shadow);
+  transition: var(--transition);
+}
+.card-aero:hover { border-color: rgba(255,255,255,0.13); }
+.card-aero .card-header {
+  background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 14px 20px; border-radius: var(--radius) var(--radius) 0 0;
+  font-size: 13px; font-weight: 600; color: var(--space-100);
+  display: flex; align-items: center; gap: 8px;
+}
+.card-aero .card-header i { color: var(--amber-400); }
+.card-aero .card-body { padding: 20px; }
+
+/* ── KPI WIDGETS ─────────────────────────────────────────── */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 16px; margin-bottom: 24px; }
+.kpi-card {
+  background: var(--space-800); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius); padding: 20px; position: relative; overflow: hidden;
+  transition: var(--transition); cursor: default;
+}
+.kpi-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.14); }
+.kpi-card .kpi-accent {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.kpi-card .kpi-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 12px;
+}
+.kpi-card .kpi-value { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; }
+.kpi-card .kpi-label { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; }
+.kpi-card .kpi-trend { font-size: 11px; margin-top: 6px; }
+.kpi-card .kpi-trend.up   { color: #4CAF50; }
+.kpi-card .kpi-trend.down { color: var(--signal-red); }
+
+.accent-blue   { background: linear-gradient(90deg, var(--space-400), var(--space-200)); }
+.accent-amber  { background: linear-gradient(90deg, var(--amber-600), var(--amber-400)); }
+.accent-green  { background: linear-gradient(90deg, #2E7D32, #4CAF50); }
+.accent-teal   { background: linear-gradient(90deg, #00796B, #26A69A); }
+.accent-purple { background: linear-gradient(90deg, #6A1B9A, #AB47BC); }
+.accent-red    { background: linear-gradient(90deg, #B71C1C, #E53935); }
+
+.icon-blue   { background: rgba(46,95,158,0.2);  color: var(--space-200); }
+.icon-amber  { background: rgba(232,119,34,0.2); color: var(--amber-400); }
+.icon-green  { background: rgba(46,125,50,0.2);  color: #66BB6A; }
+.icon-teal   { background: rgba(0,121,107,0.2);  color: #26A69A; }
+.icon-purple { background: rgba(106,27,154,0.2); color: #CE93D8; }
+.icon-red    { background: rgba(183,28,28,0.2);  color: #EF9A9A; }
+
+/* ── TABLES ──────────────────────────────────────────────── */
+.aero-table-wrapper { border-radius: var(--radius); overflow: hidden; }
+.aero-table { width: 100%; border-collapse: collapse; }
+.aero-table thead th {
+  background: var(--space-700); color: var(--space-100);
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px;
+  padding: 11px 14px; white-space: nowrap; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.aero-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s;
+}
+.aero-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+.aero-table tbody td { padding: 12px 14px; font-size: 13px; color: var(--titanium); vertical-align: middle; }
+.aero-table tbody td .fw-medium { font-weight: 600; color: #fff; }
+
+/* ── BADGES ──────────────────────────────────────────────── */
+.badge-seg {
+  display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 8px;
+  border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.seg-defence  { background: rgba(183,28,28,0.25);   color: #EF9A9A; }
+.seg-space    { background: rgba(0,96,100,0.25);    color: #80CBC4; }
+.seg-uav      { background: rgba(230,119,34,0.2);   color: #FFCC80; }
+.seg-mfg      { background: rgba(27,94,32,0.25);    color: #A5D6A7; }
+.seg-software { background: rgba(74,0,224,0.25);    color: #CE93D8; }
+.seg-mro      { background: rgba(0,77,64,0.25);     color: #80CBC4; }
+.seg-avionics { background: rgba(13,71,161,0.25);   color: #90CAF9; }
+
+.status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+}
+.status-pill::before { content:''; width:6px; height:6px; border-radius:50%; }
+.s-open       { background:rgba(46,125,50,.25);   color:#A5D6A7; } .s-open::before { background:#66BB6A; }
+.s-applied    { background:rgba(13,71,161,.25);   color:#90CAF9; } .s-applied::before { background:#42A5F5; }
+.s-interview  { background:rgba(245,166,35,.2);   color:#FFE082; } .s-interview::before { background:#FFD54F; }
+.s-won        { background:rgba(46,125,50,.25);   color:#A5D6A7; } .s-won::before { background:#66BB6A; }
+.s-lost       { background:rgba(183,28,28,.25);   color:#EF9A9A; } .s-lost::before { background:#EF5350; }
+.s-new        { background:rgba(100,100,100,.2);  color:#ccc; }    .s-new::before { background:#9E9E9E; }
+.s-proposal   { background:rgba(74,0,224,.2);     color:#CE93D8; } .s-proposal::before { background:#AB47BC; }
+.s-approved   { background:rgba(0,77,64,.25);     color:#80CBC4; } .s-approved::before { background:#26A69A; }
+.s-pending    { background:rgba(245,166,35,.15);  color:#FFE082; } .s-pending::before { background:#FFD54F; }
+
+/* ── FORMS ───────────────────────────────────────────────── */
+.form-aero .form-label { font-size: 12px; font-weight: 600; color: var(--space-100); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-aero .form-control,
+.form-aero .form-select {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: #fff; border-radius: 8px; font-size: 13.5px; padding: 9px 13px;
+  transition: var(--transition);
+}
+.form-aero .form-control:focus,
+.form-aero .form-select:focus {
+  background: rgba(255,255,255,0.09); border-color: var(--space-400);
+  box-shadow: 0 0 0 3px rgba(46,95,158,0.25); color: #fff; outline: none;
+}
+.form-aero .form-control::placeholder { color: var(--muted); }
+.form-aero .form-select option { background: var(--space-800); }
+.form-aero textarea.form-control { resize: vertical; min-height: 90px; }
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn-aero-primary {
+  background: var(--space-400); border: none; color: #fff;
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-aero-primary:hover { background: var(--space-200); color: #fff; }
+.btn-aero-amber {
+  background: var(--amber-600); border: none; color: #fff;
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-aero-amber:hover { background: var(--amber-400); }
+.btn-aero-ghost {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--space-100); padding: 7px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+  cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-aero-ghost:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.btn-danger-ghost {
+  background: rgba(183,28,28,0.15); border: 1px solid rgba(239,83,80,0.3);
+  color: #EF9A9A; padding: 5px 12px; border-radius: 6px; font-size: 12px;
+  cursor: pointer; transition: var(--transition);
+}
+.btn-danger-ghost:hover { background: rgba(183,28,28,0.3); color: #fff; }
+
+/* ── SEARCH BAR INLINE ───────────────────────────────────── */
+.search-bar-inline {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  background: var(--space-800); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px;
+}
+.search-bar-inline .form-control,
+.search-bar-inline .form-select {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: #fff; border-radius: 8px; font-size: 13px; padding: 7px 12px;
+}
+.search-bar-inline .form-control:focus,
+.search-bar-inline .form-select:focus { border-color: var(--space-400); box-shadow: none; outline:none; }
+.search-bar-inline .form-control::placeholder { color: var(--muted); }
+.search-bar-inline .form-select option { background: var(--space-800); }
+
+/* ── MODAL ───────────────────────────────────────────────── */
+.modal-aero .modal-content {
+  background: var(--space-800); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; color: #fff;
+}
+.modal-aero .modal-header {
+  border-bottom: 1px solid rgba(255,255,255,0.08); padding: 18px 24px;
+}
+.modal-aero .modal-title { font-weight: 700; font-size: 16px; }
+.modal-aero .modal-footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 14px 24px; }
+.modal-aero .btn-close { filter: invert(1) brightness(0.7); }
+
+/* ── TABS ────────────────────────────────────────────────── */
+.aero-tabs { border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 20px; display: flex; gap: 4px; }
+.aero-tab {
+  padding: 9px 18px; font-size: 13px; font-weight: 600; color: var(--muted);
+  border-bottom: 2px solid transparent; cursor: pointer; transition: var(--transition);
+  border-radius: 8px 8px 0 0; display: flex; align-items: center; gap: 6px;
+}
+.aero-tab:hover  { color: var(--space-100); background: rgba(255,255,255,0.04); }
+.aero-tab.active { color: var(--amber-400); border-bottom-color: var(--amber-600); background: rgba(232,119,34,0.07); }
+
+/* ── KANBAN ──────────────────────────────────────────────── */
+.kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 14px; }
+.kanban-col { background: var(--space-700); border-radius: var(--radius); padding: 14px; min-height: 200px; }
+.kanban-col-header { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+.kanban-count { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 20px; font-size: 11px; }
+.kanban-card { background: var(--space-800); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; cursor: grab; }
+.kanban-card:hover { border-color: var(--space-400); }
+.kanban-card .kc-title { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 5px; }
+.kanban-card .kc-sub   { font-size: 11px; color: var(--muted); }
+.kanban-card .kc-value { font-size: 13px; font-weight: 700; color: var(--amber-400); margin-top: 6px; }
+
+/* ── CHART CONTAINERS ────────────────────────────────────── */
+.chart-box { position: relative; height: 260px; }
+.chart-box-sm { position: relative; height: 180px; }
+
+/* ── PAGINATION ──────────────────────────────────────────── */
+.aero-pager { display: flex; align-items: center; gap: 6px; }
+.aero-pager button {
+  width: 32px; height: 32px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05); color: var(--space-100); font-size: 12px; cursor: pointer;
+  transition: var(--transition); display: flex; align-items: center; justify-content: center;
+}
+.aero-pager button.active { background: var(--space-400); border-color: var(--space-400); color: #fff; }
+.aero-pager button:hover  { background: rgba(255,255,255,0.1); }
+
+/* ── PROGRESS BAR ────────────────────────────────────────── */
+.prob-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
+.prob-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+/* ── TIMELINE ────────────────────────────────────────────── */
+.timeline { padding-left: 16px; border-left: 2px solid rgba(255,255,255,0.08); }
+.timeline-item { position: relative; padding: 0 0 20px 22px; }
+.timeline-item::before {
+  content:''; position: absolute; left: -7px; top: 4px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--space-400); border: 2px solid var(--space-800);
+}
+.timeline-item .ti-time { font-size: 11px; color: var(--muted); }
+.timeline-item .ti-title { font-size: 13px; font-weight: 600; color: #fff; margin-top: 2px; }
+.timeline-item .ti-body  { font-size: 12.5px; color: var(--space-100); margin-top: 3px; }
+
+/* ── STATS ROW ───────────────────────────────────────────── */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 10px; }
+.stat-mini { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 12px; text-align: center; }
+.stat-mini .sm-val { font-size: 20px; font-weight: 800; color: var(--amber-400); }
+.stat-mini .sm-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* ── COMPANY CARD GRID ───────────────────────────────────── */
+.company-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; }
+.company-card {
+  background: var(--space-800); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius); padding: 18px; cursor: pointer; transition: var(--transition);
+}
+.company-card:hover { border-color: var(--space-400); transform: translateY(-2px); }
+.cc-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.cc-logo { width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800; }
+.cc-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.3; }
+.cc-type { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.cc-body { font-size: 12px; color: var(--space-100); }
+.cc-footer { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; }
+.cc-tag { background: rgba(255,255,255,0.06); border-radius: 5px; padding: 2px 8px; font-size: 11px; color: var(--space-100); }
+.cc-metric { margin-left: auto; text-align: right; }
+.cc-metric span { font-size: 18px; font-weight: 800; color: var(--amber-400); display: block; }
+.cc-metric small { font-size: 10px; color: var(--muted); }
+
+/* ── TECH CHIP ───────────────────────────────────────────── */
+.tech-chip { display: inline-flex; align-items: center; gap: 4px; background: rgba(46,95,158,0.2); border: 1px solid rgba(46,95,158,0.3); border-radius: 6px; padding: 3px 9px; font-size: 11px; color: var(--space-100); margin: 2px; }
+.tech-chip.ai { background: rgba(106,27,154,0.2); border-color: rgba(171,71,188,0.3); color: #CE93D8; }
+.tech-chip.ml { background: rgba(0,121,107,0.2); border-color: rgba(38,166,154,0.3); color: #80CBC4; }
+.tech-chip.cad { background: rgba(46,125,50,0.2); border-color: rgba(102,187,106,0.3); color: #A5D6A7; }
+
+/* ── NOTIFICATION TOAST ──────────────────────────────────── */
+#toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column-reverse; gap: 8px; }
+.aero-toast {
+  background: var(--space-700); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 12px 16px; min-width: 280px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  display: flex; align-items: center; gap: 10px; animation: slideInRight .3s ease;
+  font-size: 13px; color: #fff;
+}
+@keyframes slideInRight { from { transform: translateX(110%); opacity:0; } to { transform: translateX(0); opacity:1; } }
+.aero-toast.success { border-left: 4px solid #4CAF50; }
+.aero-toast.error   { border-left: 4px solid var(--signal-red); }
+.aero-toast.info    { border-left: 4px solid var(--space-400); }
+
+/* ── SIDEBAR TOGGLE ──────────────────────────────────────── */
+#sidebar-toggle { background: none; border: none; color: var(--space-100); font-size: 18px; cursor: pointer; padding: 4px; }
+#sidebar-toggle:hover { color: #fff; }
+
+/* ── LOADING ─────────────────────────────────────────────── */
+.loading-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--amber-400); border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.mobile-open { transform: translateX(0); width: 260px; }
+  #topbar, #main-content { left: 0 !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <a class="sidebar-brand" href="#">
+    <div class="brand-logo">✈</div>
+    <div class="sidebar-brand-text">
+      <strong>AeroERP</strong>
+      <span>Aerospace Intelligence</span>
+    </div>
+  </a>
+
+  <ul class="sidebar-nav list-unstyled">
+    <li class="sidebar-section-label">Main</li>
+    <li class="nav-item"><a class="nav-link active" href="#" onclick="showPage('dashboard')"><i class="bi bi-speedometer2"></i><span class="nav-label">Dashboard</span></a></li>
+
+    <li class="sidebar-section-label">Company Intelligence</li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('companies')"><i class="bi bi-building"></i><span class="nav-label">Company Master</span><span class="nav-badge">50</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('contacts')"><i class="bi bi-person-lines-fill"></i><span class="nav-label">Contacts</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('technology')"><i class="bi bi-cpu"></i><span class="nav-label">Technology Tracker</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('suppliers')"><i class="bi bi-boxes"></i><span class="nav-label">Supplier Tracker</span></a></li>
+
+    <li class="sidebar-section-label">Business Development</li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('opportunities')"><i class="bi bi-funnel"></i><span class="nav-label">Opportunities</span><span class="nav-badge">12</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('projects')"><i class="bi bi-kanban"></i><span class="nav-label">Project Tracker</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('crm')"><i class="bi bi-chat-dots"></i><span class="nav-label">CRM & Follow-Up</span><span class="nav-badge">5</span></a></li>
+
+    <li class="sidebar-section-label">Career Intelligence</li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('jobs')"><i class="bi bi-briefcase"></i><span class="nav-label">Job Tracker</span></a></li>
+
+    <li class="sidebar-section-label">Analytics & Docs</li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('analytics')"><i class="bi bi-bar-chart-line"></i><span class="nav-label">Research & Analytics</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('documents')"><i class="bi bi-folder2-open"></i><span class="nav-label">Documents</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('reports')"><i class="bi bi-file-earmark-bar-graph"></i><span class="nav-label">Reports</span></a></li>
+
+    <li class="sidebar-section-label">Settings</li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('users')"><i class="bi bi-people"></i><span class="nav-label">Users & Roles</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('settings')"><i class="bi bi-gear"></i><span class="nav-label">Settings</span></a></li>
+  </ul>
+
+  <div class="sidebar-footer">
+    <div class="user-avatar">MA</div>
+    <div class="flex-grow-1" style="overflow:hidden">
+      <div style="font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Mahin</div>
+      <div style="font-size:11px;color:var(--muted)">Analyst</div>
+    </div>
+    <button class="icon-btn" onclick="logout()" title="Logout"><i class="bi bi-box-arrow-right"></i></button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     TOP BAR
+══════════════════════════════════════════════════════════════ -->
+<header id="topbar">
+  <button id="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">AeroERP</a></li>
+      <li class="breadcrumb-item active" id="breadcrumb-current">Dashboard</li>
+    </ol>
+  </nav>
+  <div class="topbar-search">
+    <i class="bi bi-search"></i>
+    <input type="text" id="global-search-input" placeholder="Search companies, contacts, technologies, projects…" oninput="globalSearch(this.value)">
+  </div>
+  <div class="topbar-actions">
+    <button class="icon-btn" onclick="showPage('crm')" title="Reminders"><i class="bi bi-bell"></i><span class="badge-dot"></span></button>
+    <button class="icon-btn" title="Refresh" onclick="refreshData()"><i class="bi bi-arrow-clockwise"></i></button>
+    <button class="icon-btn" title="Full Screen" onclick="toggleFullscreen()"><i class="bi bi-fullscreen"></i></button>
+    <div style="width:1px;height:24px;background:rgba(255,255,255,0.1)"></div>
+    <div class="user-avatar" style="width:32px;height:32px;font-size:12px;cursor:pointer" onclick="showPage('settings')">MA</div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════════════════════ -->
+<main id="main-content">
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: DASHBOARD
+───────────────────────────────────────────────────────────── -->
+<div id="page-dashboard" class="page-view active">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div>
+      <div class="page-title">Executive Dashboard</div>
+      <div class="page-subtitle">India Aerospace Industry Intelligence — Real-time Overview</div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn-aero-ghost"><i class="bi bi-download"></i> Export</button>
+      <button class="btn-aero-amber" onclick="showPage('companies')"><i class="bi bi-plus-lg"></i> Add Company</button>
+    </div>
+  </div>
+
+  <!-- KPI Row 1 -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-accent accent-blue"></div>
+      <div class="kpi-icon icon-blue"><i class="bi bi-building"></i></div>
+      <div class="kpi-value" id="kpi-total">58</div>
+      <div class="kpi-label">Total Companies</div>
+      <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> +4 this month</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent accent-red"></div>
+      <div class="kpi-icon icon-red"><i class="bi bi-shield-fill"></i></div>
+      <div class="kpi-value" id="kpi-defence">22</div>
+      <div class="kpi-label">Defence Companies</div>
+      <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> +2 this month</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent accent-teal"></div>
+      <div class="kpi-icon icon-teal"><i class="bi bi-rocket-takeoff"></i></div>
+      <div class="kpi-value" id="kpi-space">9</div>
+      <div class="kpi-label">Space Companies</div>
+      <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> +1 this month</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent accent-amber"></div>
+      <div class="kpi-icon icon-amber"><i class="bi bi-drone"></i></div>
+      <div class="kpi-value" id="kpi-drone">14</div>
+      <div class="kpi-label">Drone Companies</div>
+      <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> +3 this month</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent accent-green"></div>
+      <div class="kpi-icon icon-green"><i class="bi bi-person-check"></i></div>
+      <div class="kpi-value" id="kpi-contacts">124</div>
+      <div class="kpi-label">Total Contacts</div>
+      <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> +8 this month</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent accent-purple"></div>
+      <div class="kpi-icon icon-purple"><i class="bi bi-funnel"></i></div>
+      <div class="kpi-value" id="kpi-opps">12</div>
+      <div class="kpi-label">Active Opportunities</div>
+      <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> ₹840 Cr pipeline</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent accent-amber"></div>
+      <div class="kpi-icon icon-amber"><i class="bi bi-briefcase"></i></div>
+      <div class="kpi-value" id="kpi-jobs">47</div>
+      <div class="kpi-label">Open Positions</div>
+      <div class="kpi-trend up"><i class="bi bi-arrow-up-short"></i> 12 GET openings</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent accent-red"></div>
+      <div class="kpi-icon icon-red"><i class="bi bi-bell"></i></div>
+      <div class="kpi-value" id="kpi-followup">5</div>
+      <div class="kpi-label">Pending Follow-Ups</div>
+      <div class="kpi-trend down"><i class="bi bi-exclamation-circle"></i> 2 overdue</div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-pie-chart"></i> Industry Segment Distribution</div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart-segment"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-bar-chart"></i> Opportunity Pipeline by Status</div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart-pipeline"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-graph-up-arrow"></i> Technology Adoption across Aerospace Companies</div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart-tech"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-activity"></i> Upcoming Activities</div>
+        <div class="card-body" style="padding:14px">
+          <div class="timeline">
+            <div class="timeline-item"><div class="ti-time">Today, 3:00 PM</div><div class="ti-title">Follow-up: HAL HR</div><div class="ti-body">GET Programme 2025 enquiry call</div></div>
+            <div class="timeline-item"><div class="ti-time">Tomorrow, 11:00 AM</div><div class="ti-title">Meeting: BEL BD Team</div><div class="ti-body">AESA radar project opportunity</div></div>
+            <div class="timeline-item"><div class="ti-time">Jun 14, 2:00 PM</div><div class="ti-title">Application: Cyient LEAP</div><div class="ti-body">DO-178C avionics software role closes</div></div>
+            <div class="timeline-item"><div class="ti-time">Jun 18</div><div class="ti-title">Tender: DRDO RFQ</div><div class="ti-body">RF/Microwave module RFQ deadline</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-stars"></i> Top 10 Companies — Quick View</div>
+        <div class="card-body" style="padding:0">
+          <div class="aero-table-wrapper">
+            <table class="aero-table">
+              <thead><tr><th>#</th><th>Company</th><th>Segment</th><th>Type</th><th>Revenue</th><th>Employees</th><th>AI/ML</th><th>GET</th><th>Open Jobs</th><th>Actions</th></tr></thead>
+              <tbody id="dashboard-top10">
+                <tr><td>1</td><td><span class="fw-medium">HAL</span><br><small style="color:var(--muted)">Bangalore</small></td><td><span class="badge-seg seg-defence">Defence</span></td><td>PSU</td><td>₹28,162 Cr</td><td>30,000</td><td><span class="tech-chip ai">✓ AI</span></td><td><span class="status-pill s-open">YES</span></td><td>12</td><td><button class="btn-aero-ghost" onclick="viewCompany(1)" style="padding:4px 10px;font-size:11px">View</button></td></tr>
+                <tr><td>2</td><td><span class="fw-medium">BEL</span><br><small style="color:var(--muted)">Bangalore</small></td><td><span class="badge-seg seg-avionics">Avionics</span></td><td>PSU</td><td>₹19,996 Cr</td><td>12,400</td><td><span class="tech-chip ml">✓ ML</span></td><td><span class="status-pill s-open">YES</span></td><td>8</td><td><button class="btn-aero-ghost" onclick="viewCompany(2)" style="padding:4px 10px;font-size:11px">View</button></td></tr>
+                <tr><td>3</td><td><span class="fw-medium">ISRO</span><br><small style="color:var(--muted)">Bangalore</small></td><td><span class="badge-seg seg-space">Space</span></td><td>Govt.</td><td>₹13,043 Cr</td><td>17,000</td><td><span class="tech-chip ai">✓ AI</span></td><td><span class="status-pill s-open">YES</span></td><td>24</td><td><button class="btn-aero-ghost" onclick="viewCompany(3)" style="padding:4px 10px;font-size:11px">View</button></td></tr>
+                <tr><td>4</td><td><span class="fw-medium">Honeywell India</span><br><small style="color:var(--muted)">Hyderabad</small></td><td><span class="badge-seg seg-avionics">Avionics</span></td><td>MNC</td><td>₹8,000 Cr</td><td>18,000</td><td><span class="tech-chip ai">✓ AI</span></td><td><span class="status-pill s-open">YES</span></td><td>15</td><td><button class="btn-aero-ghost" onclick="viewCompany(4)" style="padding:4px 10px;font-size:11px">View</button></td></tr>
+                <tr><td>5</td><td><span class="fw-medium">GE Aerospace India</span><br><small style="color:var(--muted)">Hyderabad</small></td><td><span class="badge-seg seg-software">Software</span></td><td>MNC</td><td>₹6,000 Cr</td><td>10,000</td><td><span class="tech-chip ai">✓ AI</span></td><td><span class="status-pill s-open">YES</span></td><td>11</td><td><button class="btn-aero-ghost" onclick="viewCompany(5)" style="padding:4px 10px;font-size:11px">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end dashboard -->
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: COMPANY MASTER
+───────────────────────────────────────────────────────────── -->
+<div id="page-companies" class="page-view">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div>
+      <div class="page-title">Company Master</div>
+      <div class="page-subtitle">Module 1 — Aerospace Company Intelligence Database</div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn-aero-ghost" id="btn-view-grid" onclick="setCompanyView('grid')"><i class="bi bi-grid-3x3-gap"></i> Grid</button>
+      <button class="btn-aero-ghost" id="btn-view-list" onclick="setCompanyView('list')"><i class="bi bi-list-ul"></i> List</button>
+      <button class="btn-aero-ghost"><i class="bi bi-download"></i> Export</button>
+      <button class="btn-aero-amber" data-bs-toggle="modal" data-bs-target="#modal-add-company"><i class="bi bi-plus-lg"></i> Add Company</button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="search-bar-inline">
+    <div style="position:relative;flex:1;min-width:200px">
+      <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted)"></i>
+      <input class="form-control" id="co-search" placeholder="Search company name…" style="padding-left:32px" oninput="filterCompanies()">
+    </div>
+    <select class="form-select" style="width:auto" id="co-type" onchange="filterCompanies()">
+      <option value="">All Types</option>
+      <option>PSU</option><option>Private</option><option>MNC</option><option>Startup</option><option>JV</option><option>Govt.</option>
+    </select>
+    <select class="form-select" style="width:auto" id="co-segment" onchange="filterCompanies()">
+      <option value="">All Segments</option>
+      <option value="DEFENCE">Defence</option><option value="SPACE">Space</option>
+      <option value="UAV">UAV/Drone</option><option value="MFG">Manufacturing</option>
+      <option value="SOFTWARE">Software</option><option value="MRO">MRO</option><option value="AVIONICS">Avionics</option>
+    </select>
+    <select class="form-select" style="width:auto" id="co-ai" onchange="filterCompanies()">
+      <option value="">AI/ML: All</option>
+      <option value="yes">Uses AI/ML</option>
+    </select>
+    <select class="form-select" style="width:auto" id="co-get" onchange="filterCompanies()">
+      <option value="">GET: All</option>
+      <option value="yes">Has GET Programme</option>
+    </select>
+    <button class="btn-aero-ghost" onclick="clearFilters()"><i class="bi bi-x-circle"></i> Clear</button>
+    <span id="co-count" style="font-size:12px;color:var(--muted);white-space:nowrap">58 companies</span>
+  </div>
+
+  <!-- Grid View -->
+  <div id="co-grid-view" class="company-grid" style="display:grid">
+    <!-- Dynamically generated by JS -->
+  </div>
+
+  <!-- List View -->
+  <div id="co-list-view" style="display:none">
+    <div class="card-aero">
+      <div class="card-body" style="padding:0">
+        <div class="aero-table-wrapper">
+          <table class="aero-table" id="co-list-table">
+            <thead><tr>
+              <th>Company</th><th>Type</th><th>Segment</th><th>HQ</th>
+              <th>Revenue</th><th>Employees</th><th>AI/ML</th><th>GET</th><th>Careers</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="co-list-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex align-items-center justify-content-between mt-3">
+    <span style="font-size:12px;color:var(--muted)">Showing 1–20 of 58</span>
+    <div class="aero-pager">
+      <button><i class="bi bi-chevron-left"></i></button>
+      <button class="active">1</button><button>2</button><button>3</button>
+      <button><i class="bi bi-chevron-right"></i></button>
+    </div>
+  </div>
+</div><!-- end companies -->
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: OPPORTUNITIES
+───────────────────────────────────────────────────────────── -->
+<div id="page-opportunities" class="page-view">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div><div class="page-title">Business Opportunity Tracker</div><div class="page-subtitle">Module 3 — BD Pipeline Management</div></div>
+    <div class="d-flex gap-2">
+      <button class="btn-aero-ghost" onclick="setOppView('kanban')"><i class="bi bi-kanban"></i> Kanban</button>
+      <button class="btn-aero-ghost" onclick="setOppView('list')"><i class="bi bi-list-ul"></i> List</button>
+      <button class="btn-aero-amber" data-bs-toggle="modal" data-bs-target="#modal-add-opp"><i class="bi bi-plus-lg"></i> Add Opportunity</button>
+    </div>
+  </div>
+
+  <!-- Pipeline summary -->
+  <div class="stats-row mb-4">
+    <div class="stat-mini"><span>₹840 Cr</span><div class="sm-lbl">Total Pipeline</div></div>
+    <div class="stat-mini"><span>12</span><div class="sm-lbl">Active Opps</div></div>
+    <div class="stat-mini"><span>₹240 Cr</span><div class="sm-lbl">Expected Value</div></div>
+    <div class="stat-mini"><span>3</span><div class="sm-lbl">Won This Year</div></div>
+    <div class="stat-mini"><span>68%</span><div class="sm-lbl">Win Rate</div></div>
+  </div>
+
+  <!-- Kanban Board -->
+  <div id="opp-kanban" class="kanban-board">
+    <div class="kanban-col">
+      <div class="kanban-col-header" style="color:#9E9E9E">NEW <span class="kanban-count">3</span></div>
+      <div class="kanban-card"><div class="kc-title">DRDO EW Sub-system</div><div class="kc-sub">L&T Defence · RFQ-24-EW-0012</div><div class="kc-value">₹120 Cr</div></div>
+      <div class="kanban-card"><div class="kc-title">ISRO Payload Software</div><div class="kc-sub">NSIL · RFQ-25-NSIL-004</div><div class="kc-value">₹8 Cr</div></div>
+      <div class="kanban-card"><div class="kc-title">Agri Drone Supply</div><div class="kc-sub">Garuda Aerospace · Direct</div><div class="kc-value">₹2 Cr</div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-header" style="color:#42A5F5">QUALIFIED <span class="kanban-count">2</span></div>
+      <div class="kanban-card"><div class="kc-title">Tejas Mk1A Avionics SW</div><div class="kc-sub">HAL · RFQ-24-HAL-0188</div><div class="kc-value">₹45 Cr</div></div>
+      <div class="kanban-card"><div class="kc-title">BEL AESA Module</div><div class="kc-sub">BEL · Tender BEL-T-0923</div><div class="kc-value">₹310 Cr</div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-header" style="color:#CE93D8">PROPOSAL <span class="kanban-count">3</span></div>
+      <div class="kanban-card"><div class="kc-title">Skyroot Engine Test</div><div class="kc-sub">Skyroot Aerospace · Direct</div><div class="kc-value">₹12 Cr</div></div>
+      <div class="kanban-card"><div class="kc-title">Pixxel Aurora AI</div><div class="kc-sub">Pixxel Space · Partnership</div><div class="kc-value">₹5 Cr</div></div>
+      <div class="kanban-card"><div class="kc-title">Cyient DO-178C</div><div class="kc-sub">Cyient · Sub-contract</div><div class="kc-value">₹28 Cr</div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-header" style="color:#FFD54F">NEGOTIATION <span class="kanban-count">2</span></div>
+      <div class="kanban-card"><div class="kc-title">DRDO UAV Guidance</div><div class="kc-sub">DRDO · Direct</div><div class="kc-value">₹55 Cr</div></div>
+      <div class="kanban-card"><div class="kc-title">Honeywell FMS Plugin</div><div class="kc-sub">Honeywell India · Partner</div><div class="kc-value">₹18 Cr</div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-header" style="color:#A5D6A7">WON <span class="kanban-count">2</span></div>
+      <div class="kanban-card" style="opacity:.8"><div class="kc-title">BDL Missile SW</div><div class="kc-sub">BDL · ₹34 Cr · Won Mar 25</div></div>
+      <div class="kanban-card" style="opacity:.8"><div class="kc-title">ideaForge CV Module</div><div class="kc-sub">ideaForge · ₹6 Cr · Won Jan 25</div></div>
+    </div>
+  </div>
+</div><!-- end opportunities -->
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: JOB TRACKER
+───────────────────────────────────────────────────────────── -->
+<div id="page-jobs" class="page-view">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div><div class="page-title">Job & Career Tracker</div><div class="page-subtitle">Module 4 — Aerospace Job Pipeline & Personal Application Management</div></div>
+    <div class="d-flex gap-2">
+      <button class="btn-aero-ghost"><i class="bi bi-download"></i> Export</button>
+      <button class="btn-aero-amber" data-bs-toggle="modal" data-bs-target="#modal-add-job"><i class="bi bi-plus-lg"></i> Add Job</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row mb-4">
+    <div class="stat-mini"><span>47</span><div class="sm-lbl">Open Positions</div></div>
+    <div class="stat-mini"><span>12</span><div class="sm-lbl">GET Programmes</div></div>
+    <div class="stat-mini"><span>8</span><div class="sm-lbl">Applied</div></div>
+    <div class="stat-mini"><span>3</span><div class="sm-lbl">Interviews</div></div>
+    <div class="stat-mini"><span>1</span><div class="sm-lbl">Offers</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="aero-tabs">
+    <div class="aero-tab active" onclick="setJobTab('all', this)">All Jobs</div>
+    <div class="aero-tab" onclick="setJobTab('get', this)"><i class="bi bi-mortarboard"></i> GET Programs</div>
+    <div class="aero-tab" onclick="setJobTab('applied', this)">My Applications</div>
+    <div class="aero-tab" onclick="setJobTab('intern', this)">Internships</div>
+  </div>
+
+  <!-- Filters -->
+  <div class="search-bar-inline">
+    <input class="form-control" placeholder="Search job title…" style="flex:1;min-width:180px">
+    <select class="form-select" style="width:auto"><option value="">All Companies</option><option>HAL</option><option>BEL</option><option>ISRO</option><option>Cyient</option></select>
+    <select class="form-select" style="width:auto"><option value="">All Locations</option><option>Hyderabad</option><option>Bangalore</option><option>Delhi</option><option>Mumbai</option></select>
+    <select class="form-select" style="width:auto"><option value="">All Status</option><option>Open</option><option>Applied</option><option>Interview</option><option>Closed</option></select>
+    <select class="form-select" style="width:auto"><option value="">Experience</option><option>0–1 yr (Fresher)</option><option>1–3 yrs</option><option>3–5 yrs</option></select>
+  </div>
+
+  <div class="card-aero">
+    <div class="card-body" style="padding:0">
+      <div class="aero-table-wrapper">
+        <table class="aero-table" id="jobs-table">
+          <thead><tr>
+            <th>Company</th><th>Position</th><th>Dept.</th><th>Location</th>
+            <th>Experience</th><th>Salary (LPA)</th><th>Type</th><th>Closing Date</th>
+            <th>Job Status</th><th>My Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="jobs-tbody">
+            <tr>
+              <td><span class="fw-medium">HAL</span></td>
+              <td>Junior Works Manager – Avionics</td>
+              <td>Avionics Division</td>
+              <td>Bangalore</td>
+              <td>0–2 yr</td>
+              <td>₹7–9 LPA</td>
+              <td><span class="badge-seg seg-defence">GET</span></td>
+              <td>Jul 30, 2025</td>
+              <td><span class="status-pill s-open">Open</span></td>
+              <td><span class="status-pill s-applied">Applied</span></td>
+              <td>
+                <a href="#" class="btn-aero-ghost" style="padding:3px 9px;font-size:11px">View</a>
+                <button class="btn-danger-ghost ms-1">Remove</button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="fw-medium">Cyient</span></td>
+              <td>Associate Engineer – DO-178C</td>
+              <td>Avionics Software</td>
+              <td>Hyderabad</td>
+              <td>0–1 yr</td>
+              <td>₹5–7 LPA</td>
+              <td><span class="badge-seg seg-software">Fresher</span></td>
+              <td>Jun 20, 2025</td>
+              <td><span class="status-pill s-open">Open</span></td>
+              <td><span class="status-pill s-new">New</span></td>
+              <td>
+                <a href="#" class="btn-aero-ghost" style="padding:3px 9px;font-size:11px">Apply</a>
+                <button class="btn-aero-ghost ms-1" style="padding:3px 9px;font-size:11px">Track</button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="fw-medium">ideaForge</span></td>
+              <td>Embedded Systems Engineer</td>
+              <td>UAV Engineering</td>
+              <td>Mumbai</td>
+              <td>0–2 yr</td>
+              <td>₹6–8 LPA</td>
+              <td><span class="badge-seg seg-uav">UAV</span></td>
+              <td>Jul 15, 2025</td>
+              <td><span class="status-pill s-open">Open</span></td>
+              <td><span class="status-pill s-interview">Interview</span></td>
+              <td>
+                <a href="#" class="btn-aero-ghost" style="padding:3px 9px;font-size:11px">View</a>
+                <button class="btn-aero-ghost ms-1" style="padding:3px 9px;font-size:11px">Log Call</button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="fw-medium">Skyroot</span></td>
+              <td>ML Engineer – Trajectory Opt.</td>
+              <td>GNC & Software</td>
+              <td>Hyderabad</td>
+              <td>0–2 yr</td>
+              <td>₹8–12 LPA</td>
+              <td><span class="badge-seg seg-space">Space</span></td>
+              <td>Jun 25, 2025</td>
+              <td><span class="status-pill s-open">Open</span></td>
+              <td><span class="status-pill s-new">Not Applied</span></td>
+              <td>
+                <a href="#" class="btn-aero-ghost" style="padding:3px 9px;font-size:11px">Apply</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div><!-- end jobs -->
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: TECHNOLOGY TRACKER
+───────────────────────────────────────────────────────────── -->
+<div id="page-technology" class="page-view">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div><div class="page-title">Technology Tracker</div><div class="page-subtitle">Module 5 — Aerospace Technology Adoption Intelligence</div></div>
+    <button class="btn-aero-amber" data-bs-toggle="modal" data-bs-target="#modal-add-tech"><i class="bi bi-plus-lg"></i> Add Tech Profile</button>
+  </div>
+
+  <!-- Tech KPIs -->
+  <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+    <div class="kpi-card"><div class="kpi-accent accent-purple"></div><div class="kpi-icon icon-purple"><i class="bi bi-robot"></i></div><div class="kpi-value">25</div><div class="kpi-label">AI Companies</div></div>
+    <div class="kpi-card"><div class="kpi-accent accent-teal"></div><div class="kpi-icon icon-teal"><i class="bi bi-diagram-3"></i></div><div class="kpi-value">18</div><div class="kpi-label">Digital Twin</div></div>
+    <div class="kpi-card"><div class="kpi-accent accent-green"></div><div class="kpi-icon icon-green"><i class="bi bi-layers"></i></div><div class="kpi-value">12</div><div class="kpi-label">Additive Mfg</div></div>
+    <div class="kpi-card"><div class="kpi-accent accent-blue"></div><div class="kpi-icon icon-blue"><i class="bi bi-cpu"></i></div><div class="kpi-value">34</div><div class="kpi-label">Embedded SW</div></div>
+    <div class="kpi-card"><div class="kpi-accent accent-amber"></div><div class="kpi-icon icon-amber"><i class="bi bi-airplane"></i></div><div class="kpi-value">28</div><div class="kpi-label">Avionics SW</div></div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-5">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-radar"></i> Technology Radar</div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart-tech-radar"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <div class="card-aero" style="height:100%">
+        <div class="card-header"><i class="bi bi-robot"></i> Companies Using AI/ML</div>
+        <div class="card-body" style="padding:0">
+          <table class="aero-table">
+            <thead><tr><th>Company</th><th>AI Applications</th><th>ML Stack</th><th>CAD</th><th>DO-178C</th></tr></thead>
+            <tbody>
+              <tr><td class="fw-medium">Honeywell India</td><td><span class="tech-chip ai">Predictive MRO</span><span class="tech-chip ai">Crew AI</span></td><td>TF, Azure ML, Python</td><td>CATIA,NX</td><td><span class="status-pill s-won">✓</span></td></tr>
+              <tr><td class="fw-medium">GE Aerospace</td><td><span class="tech-chip ai">Engine Health</span><span class="tech-chip ai">Predix</span></td><td>TF, Python, ANSYS AI</td><td>CATIA,NX</td><td><span class="status-pill s-won">✓</span></td></tr>
+              <tr><td class="fw-medium">Cyient</td><td><span class="tech-chip ai">MRO Insights</span></td><td>PyTorch, Azure ML</td><td>CATIA,NX</td><td><span class="status-pill s-won">✓</span></td></tr>
+              <tr><td class="fw-medium">Pixxel Space</td><td><span class="tech-chip ml">Image AI</span><span class="tech-chip ml">Crop Health</span></td><td>TF, OpenCV, SageMaker</td><td>SolidWorks</td><td>—</td></tr>
+              <tr><td class="fw-medium">ideaForge</td><td><span class="tech-chip ai">Object Track</span><span class="tech-chip ai">YOLO</span></td><td>OpenCV, TF, ROS</td><td>SolidWorks</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end technology -->
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: CRM & FOLLOW-UP
+───────────────────────────────────────────────────────────── -->
+<div id="page-crm" class="page-view">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div><div class="page-title">CRM & Follow-Up Management</div><div class="page-subtitle">Module 10 — Activity Tracking, Reminders & Communication Logs</div></div>
+    <button class="btn-aero-amber" data-bs-toggle="modal" data-bs-target="#modal-add-activity"><i class="bi bi-plus-lg"></i> Log Activity</button>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="aero-tabs">
+        <div class="aero-tab active" onclick="setCrmTab('all',this)">All Activities</div>
+        <div class="aero-tab" onclick="setCrmTab('call',this)"><i class="bi bi-telephone"></i> Calls</div>
+        <div class="aero-tab" onclick="setCrmTab('meeting',this)"><i class="bi bi-people"></i> Meetings</div>
+        <div class="aero-tab" onclick="setCrmTab('email',this)"><i class="bi bi-envelope"></i> Emails</div>
+        <div class="aero-tab" onclick="setCrmTab('followup',this)"><i class="bi bi-alarm"></i> Follow-Ups</div>
+      </div>
+      <div class="card-aero">
+        <div class="card-body" style="padding:0">
+          <table class="aero-table">
+            <thead><tr><th>Date</th><th>Type</th><th>Company</th><th>Contact</th><th>Subject</th><th>Outcome</th><th>Next Action</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Jun 10, 2025</td>
+                <td><i class="bi bi-telephone-fill" style="color:var(--amber-400)"></i> Call</td>
+                <td class="fw-medium">HAL</td>
+                <td>Anita Sharma</td>
+                <td>GET 2025 enquiry</td>
+                <td>HR confirmed openings in Aug</td>
+                <td>Send resume by Jun 20</td>
+                <td><span class="status-pill s-open">Open</span></td>
+              </tr>
+              <tr>
+                <td>Jun 8, 2025</td>
+                <td><i class="bi bi-envelope-fill" style="color:var(--space-200)"></i> Email</td>
+                <td class="fw-medium">Cyient</td>
+                <td>Priya Nair (HR)</td>
+                <td>LEAP programme application</td>
+                <td>Auto-reply received</td>
+                <td>Follow up Jun 15</td>
+                <td><span class="status-pill s-open">Open</span></td>
+              </tr>
+              <tr>
+                <td>Jun 5, 2025</td>
+                <td><i class="bi bi-people-fill" style="color:#66BB6A"></i> Meeting</td>
+                <td class="fw-medium">BEL</td>
+                <td>Mohan Rao (BD)</td>
+                <td>AESA project opportunity</td>
+                <td>Shortlisted for proposal</td>
+                <td>Submit RFQ response</td>
+                <td><span class="status-pill s-proposal">In Progress</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card-aero mb-4">
+        <div class="card-header"><i class="bi bi-alarm"></i> Upcoming Reminders</div>
+        <div class="card-body" style="padding:14px">
+          <div class="timeline">
+            <div class="timeline-item"><div class="ti-time">Today 3 PM</div><div class="ti-title">Call: HAL HR</div><div class="ti-body">GET Programme follow-up</div></div>
+            <div class="timeline-item"><div class="ti-time">Jun 15</div><div class="ti-title">Email: Cyient</div><div class="ti-body">LEAP application follow-up</div></div>
+            <div class="timeline-item"><div class="ti-time">Jun 20</div><div class="ti-title">Submit: HAL resume</div><div class="ti-body">JWM Avionics role</div></div>
+            <div class="timeline-item"><div class="ti-time">Jun 25</div><div class="ti-title">RFQ: BEL AESA</div><div class="ti-body">Proposal submission deadline</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-bar-chart-steps"></i> Activity Summary</div>
+        <div class="card-body">
+          <div class="chart-box-sm"><canvas id="chart-activity"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end crm -->
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: ANALYTICS
+───────────────────────────────────────────────────────────── -->
+<div id="page-analytics" class="page-view">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div><div class="page-title">Research & Analytics</div><div class="page-subtitle">Module 9 — Aerospace Industry Intelligence & Trend Analysis</div></div>
+    <div class="d-flex gap-2">
+      <select class="form-control" style="width:auto;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;font-size:13px;padding:7px 12px">
+        <option>Last 12 Months</option><option>Last 6 Months</option><option>FY 2024-25</option>
+      </select>
+      <button class="btn-aero-ghost"><i class="bi bi-download"></i> Export Report</button>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-cash-stack"></i> Revenue Analysis by Segment</div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart-revenue"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-trending-up"></i> Drone Industry Growth 2020–2025</div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart-drone-growth"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-rocket-takeoff"></i> Space Sector Growth</div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart-space-growth"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-bar-chart-line"></i> Hiring Trends — Aerospace India</div>
+        <div class="card-body"><div class="chart-box"><canvas id="chart-hiring"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card-aero">
+        <div class="card-header"><i class="bi bi-table"></i> Company Comparison Matrix</div>
+        <div class="card-body" style="padding:0">
+          <table class="aero-table">
+            <thead><tr><th>Company</th><th>Segment</th><th>Revenue</th><th>Employees</th><th>AI</th><th>Digital Twin</th><th>Additive Mfg</th><th>DO-178C</th><th>Market Rank</th><th>Fresher Rank</th></tr></thead>
+            <tbody>
+              <tr><td class="fw-medium">HAL</td><td><span class="badge-seg seg-defence">Defence</span></td><td>₹28,162 Cr</td><td>30,000</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>🥇 1</td><td>🥈 2</td></tr>
+              <tr><td class="fw-medium">BEL</td><td><span class="badge-seg seg-avionics">Avionics</span></td><td>₹19,996 Cr</td><td>12,400</td><td>✓</td><td>—</td><td>—</td><td>✓</td><td>🥈 2</td><td>🥇 1</td></tr>
+              <tr><td class="fw-medium">ISRO</td><td><span class="badge-seg seg-space">Space</span></td><td>₹13,043 Cr</td><td>17,000</td><td>✓</td><td>✓</td><td>—</td><td>—</td><td>🥉 3</td><td>🥇 1</td></tr>
+              <tr><td class="fw-medium">Cyient</td><td><span class="badge-seg seg-software">Software</span></td><td>₹7,200 Cr</td><td>15,000</td><td>✓</td><td>✓</td><td>—</td><td>✓</td><td>6</td><td>🥇 1</td></tr>
+              <tr><td class="fw-medium">ideaForge</td><td><span class="badge-seg seg-uav">UAV</span></td><td>₹355 Cr</td><td>400</td><td>✓</td><td>—</td><td>—</td><td>—</td><td>1 (UAV)</td><td>🥈 2</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end analytics -->
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: REPORTS
+───────────────────────────────────────────────────────────── -->
+<div id="page-reports" class="page-view">
+  <div class="page-header">
+    <div class="page-title">Reports & Exports</div>
+    <div class="page-subtitle">Generate pre-built and custom aerospace intelligence reports</div>
+  </div>
+  <div class="row g-3">
+    <!-- Report cards -->
+    <div class="col-md-4 col-lg-3" onclick="generateReport('top-employers')">
+      <div class="card-aero" style="cursor:pointer;padding:20px">
+        <div style="font-size:28px;margin-bottom:10px">🏆</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:5px">Top 50 Aerospace Employers</div>
+        <div style="font-size:12px;color:var(--muted)">Ranked by revenue, hiring, tech capability</div>
+        <button class="btn-aero-ghost mt-3" style="font-size:11px"><i class="bi bi-download"></i> Generate Excel</button>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3" onclick="generateReport('ai-companies')">
+      <div class="card-aero" style="cursor:pointer;padding:20px">
+        <div style="font-size:28px;margin-bottom:10px">🤖</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:5px">Companies Using AI/ML</div>
+        <div style="font-size:12px;color:var(--muted)">AI applications, tech stack, hiring</div>
+        <button class="btn-aero-ghost mt-3" style="font-size:11px"><i class="bi bi-download"></i> Generate Excel</button>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3" onclick="generateReport('defence-suppliers')">
+      <div class="card-aero" style="cursor:pointer;padding:20px">
+        <div style="font-size:28px;margin-bottom:10px">🛡️</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:5px">Defence Suppliers</div>
+        <div style="font-size:12px;color:var(--muted)">Approved vendors, audit status, certs</div>
+        <button class="btn-aero-ghost mt-3" style="font-size:11px"><i class="bi bi-download"></i> Generate PDF</button>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3" onclick="generateReport('drone-startups')">
+      <div class="card-aero" style="cursor:pointer;padding:20px">
+        <div style="font-size:28px;margin-bottom:10px">🚁</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:5px">Drone Startups India</div>
+        <div style="font-size:12px;color:var(--muted)">Funding, tech, hiring, growth plans</div>
+        <button class="btn-aero-ghost mt-3" style="font-size:11px"><i class="bi bi-download"></i> Generate PDF</button>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3" onclick="generateReport('space-startups')">
+      <div class="card-aero" style="cursor:pointer;padding:20px">
+        <div style="font-size:28px;margin-bottom:10px">🚀</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:5px">Space Startups India</div>
+        <div style="font-size:12px;color:var(--muted)">IN-SPACe licensed, funding, missions</div>
+        <button class="btn-aero-ghost mt-3" style="font-size:11px"><i class="bi bi-download"></i> Generate PDF</button>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3" onclick="generateReport('biz-opps')">
+      <div class="card-aero" style="cursor:pointer;padding:20px">
+        <div style="font-size:28px;margin-bottom:10px">💼</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:5px">Business Opportunities</div>
+        <div style="font-size:12px;color:var(--muted)">Full pipeline with probability & value</div>
+        <button class="btn-aero-ghost mt-3" style="font-size:11px"><i class="bi bi-download"></i> Generate Excel</button>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3" onclick="generateReport('contact-dir')">
+      <div class="card-aero" style="cursor:pointer;padding:20px">
+        <div style="font-size:28px;margin-bottom:10px">📇</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:5px">Contact Directory</div>
+        <div style="font-size:12px;color:var(--muted)">Full aerospace contact database</div>
+        <button class="btn-aero-ghost mt-3" style="font-size:11px"><i class="bi bi-download"></i> Generate Excel</button>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3" onclick="generateReport('get-jobs')">
+      <div class="card-aero" style="cursor:pointer;padding:20px">
+        <div style="font-size:28px;margin-bottom:10px">🎓</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:5px">GET & Fresher Jobs</div>
+        <div style="font-size:12px;color:var(--muted)">All open GET programmes and fresher roles</div>
+        <button class="btn-aero-ghost mt-3" style="font-size:11px"><i class="bi bi-download"></i> Generate PDF</button>
+      </div>
+    </div>
+  </div>
+</div><!-- end reports -->
+
+<!-- ─────────────────────────────────────────────────────────
+     PAGE: CONTACTS (stub)
+───────────────────────────────────────────────────────────── -->
+<div id="page-contacts" class="page-view">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div><div class="page-title">Contact Management</div><div class="page-subtitle">Module 2 — Aerospace Industry Contact Directory</div></div>
+    <button class="btn-aero-amber" data-bs-toggle="modal" data-bs-target="#modal-add-contact"><i class="bi bi-person-plus"></i> Add Contact</button>
+  </div>
+  <div class="search-bar-inline">
+    <input class="form-control" placeholder="Search by name, company, designation…" style="flex:1">
+    <select class="form-select" style="width:auto"><option>All Status</option><option>Active</option><option>Inactive</option></select>
+  </div>
+  <div class="card-aero">
+    <div class="card-body" style="padding:0">
+      <table class="aero-table">
+        <thead><tr><th>Name</th><th>Designation</th><th>Company</th><th>Email</th><th>Mobile</th><th>LinkedIn</th><th>Last Contact</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td class="fw-medium">Anita Sharma</td><td>HR Manager</td><td>HAL</td><td>anita.s@hal-india.co.in</td><td>+91-98XXX-XXXXX</td><td><a href="#" style="color:var(--space-200)"><i class="bi bi-linkedin"></i></a></td><td>Jun 10, 2025</td><td><span class="status-pill s-open">Active</span></td><td><button class="btn-aero-ghost" style="padding:3px 9px;font-size:11px">View</button></td></tr>
+          <tr><td class="fw-medium">Mohan Rao</td><td>BD Head</td><td>BEL</td><td>bd@bel-india.in</td><td>+91-99XXX-XXXXX</td><td><a href="#" style="color:var(--space-200)"><i class="bi bi-linkedin"></i></a></td><td>Jun 5, 2025</td><td><span class="status-pill s-open">Active</span></td><td><button class="btn-aero-ghost" style="padding:3px 9px;font-size:11px">View</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Stubs for remaining pages -->
+<div id="page-suppliers" class="page-view">
+  <div class="page-header"><div class="page-title">Supplier & Vendor Tracker</div><div class="page-subtitle">Module 6</div></div>
+  <div class="stats-row mb-4"><div class="stat-mini"><span>34</span><div class="sm-lbl">Total Suppliers</div></div><div class="stat-mini"><span>22</span><div class="sm-lbl">Approved</div></div><div class="stat-mini"><span>5</span><div class="sm-lbl">Pending Audit</div></div></div>
+  <div class="card-aero"><div class="card-header"><i class="bi bi-boxes"></i> Supplier List</div><div class="card-body" style="padding:0"><table class="aero-table"><thead><tr><th>Supplier</th><th>Products</th><th>City</th><th>Certifications</th><th>Approval</th><th>Audit</th><th>Actions</th></tr></thead><tbody><tr><td class="fw-medium">MIDHANI</td><td>Ti alloys, Superalloys</td><td>Hyderabad</td><td>AS9100D, ISO 9001</td><td><span class="status-pill s-approved">Approved</span></td><td><span class="status-pill s-open">Cleared</span></td><td><button class="btn-aero-ghost" style="font-size:11px;padding:3px 9px">View</button></td></tr><tr><td class="fw-medium">Godrej Aerospace</td><td>Precision parts, Space comps</td><td>Mumbai</td><td>AS9100D, NADCAP</td><td><span class="status-pill s-approved">Approved</span></td><td><span class="status-pill s-open">Cleared</span></td><td><button class="btn-aero-ghost" style="font-size:11px;padding:3px 9px">View</button></td></tr></tbody></table></div></div>
+</div>
+
+<div id="page-projects" class="page-view">
+  <div class="page-header"><div class="page-title">Project Tracker</div><div class="page-subtitle">Module 7</div></div>
+  <div class="stats-row mb-4"><div class="stat-mini"><span>28</span><div class="sm-lbl">Total Projects</div></div><div class="stat-mini"><span>14</span><div class="sm-lbl">Ongoing</div></div><div class="stat-mini"><span>11</span><div class="sm-lbl">Completed</div></div><div class="stat-mini"><span>3</span><div class="sm-lbl">Planned</div></div></div>
+  <div class="card-aero"><div class="card-header"><i class="bi bi-kanban"></i> Active Projects</div><div class="card-body" style="padding:0"><table class="aero-table"><thead><tr><th>Company</th><th>Project</th><th>Sector</th><th>Value</th><th>Start</th><th>End</th><th>Status</th></tr></thead><tbody><tr><td class="fw-medium">HAL</td><td>Tejas Mk1A 83-aircraft production</td><td><span class="badge-seg seg-defence">Defence</span></td><td>₹48,000 Cr</td><td>2021</td><td>2028</td><td><span class="status-pill s-open">Ongoing</span></td></tr><tr><td class="fw-medium">ISRO</td><td>Gaganyaan Human Spaceflight</td><td><span class="badge-seg seg-space">Space</span></td><td>₹10,000 Cr</td><td>2019</td><td>2025</td><td><span class="status-pill s-interview">Final Phase</span></td></tr></tbody></table></div></div>
+</div>
+
+<div id="page-documents" class="page-view">
+  <div class="page-header d-flex align-items-center justify-content-between">
+    <div><div class="page-title">Document Management</div><div class="page-subtitle">Module 8 — Brochures, Reports, Certifications, NDAs</div></div>
+    <button class="btn-aero-amber"><i class="bi bi-upload"></i> Upload Document</button>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="card-aero" style="padding:18px;cursor:pointer"><div style="font-size:24px;margin-bottom:8px">📁</div><div style="font-weight:600;color:#fff">Company Brochures</div><div style="font-size:12px;color:var(--muted);margin-top:3px">24 files</div></div></div>
+    <div class="col-md-3"><div class="card-aero" style="padding:18px;cursor:pointer"><div style="font-size:24px;margin-bottom:8px">📊</div><div style="font-weight:600;color:#fff">Annual Reports</div><div style="font-size:12px;color:var(--muted);margin-top:3px">18 files</div></div></div>
+    <div class="col-md-3"><div class="card-aero" style="padding:18px;cursor:pointer"><div style="font-size:24px;margin-bottom:8px">📜</div><div style="font-weight:600;color:#fff">Certifications</div><div style="font-size:12px;color:var(--muted);margin-top:3px">42 files</div></div></div>
+    <div class="col-md-3"><div class="card-aero" style="padding:18px;cursor:pointer"><div style="font-size:24px;margin-bottom:8px">🔒</div><div style="font-weight:600;color:#fff">NDA Documents</div><div style="font-size:12px;color:var(--muted);margin-top:3px">7 files</div></div></div>
+  </div>
+</div>
+
+<div id="page-users" class="page-view">
+  <div class="page-header"><div class="page-title">Users & Roles</div><div class="page-subtitle">System Administration — Access Control</div></div>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card-aero"><div class="card-header"><i class="bi bi-people"></i> System Users</div><div class="card-body" style="padding:0"><table class="aero-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr><td class="fw-medium">Mahin</td><td>mahin@aeroerp.in</td><td><span class="badge-seg seg-software">Analyst</span></td><td>Jun 10, 2025 10:30</td><td><span class="status-pill s-open">Active</span></td><td><button class="btn-aero-ghost" style="font-size:11px;padding:3px 9px">Edit</button></td></tr></tbody></table></div></div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card-aero"><div class="card-header"><i class="bi bi-shield-lock"></i> Roles</div><div class="card-body">
+        <div style="margin-bottom:12px" v-for="r in roles">
+          <div style="font-weight:600;color:#fff;font-size:13px">SuperAdmin</div><div style="font-size:12px;color:var(--muted)">Full access · 0 users</div>
+        </div>
+        <div style="margin-bottom:12px"><div style="font-weight:600;color:#fff;font-size:13px">Admin</div><div style="font-size:12px;color:var(--muted)">Module admin · 1 user</div></div>
+        <div style="margin-bottom:12px"><div style="font-weight:600;color:#fff;font-size:13px">BDManager</div><div style="font-size:12px;color:var(--muted)">BD pipeline · 0 users</div></div>
+        <div style="margin-bottom:12px"><div style="font-weight:600;color:#fff;font-size:13px">Analyst</div><div style="font-size:12px;color:var(--muted)">Research read/write · 1 user</div></div>
+        <div><div style="font-weight:600;color:#fff;font-size:13px">Viewer</div><div style="font-size:12px;color:var(--muted)">Read-only · 0 users</div></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-settings" class="page-view">
+  <div class="page-header"><div class="page-title">System Settings</div><div class="page-subtitle">ERP Configuration, API Keys, Integrations</div></div>
+  <div class="row g-4">
+    <div class="col-lg-6"><div class="card-aero"><div class="card-header"><i class="bi bi-gear"></i> General Settings</div><div class="card-body form-aero"><div class="mb-3"><label class="form-label">System Name</label><input class="form-control" value="AeroERP – India Aerospace Intelligence"></div><div class="mb-3"><label class="form-label">API Base URL</label><input class="form-control" value="https://api.aeroerp.local/api/"></div><div class="mb-3"><label class="form-label">JWT Expiry (hours)</label><input class="form-control" value="8"></div><button class="btn-aero-primary">Save Settings</button></div></div></div>
+    <div class="col-lg-6"><div class="card-aero"><div class="card-header"><i class="bi bi-robot"></i> AI Integration (Future)</div><div class="card-body"><div style="color:var(--muted);font-size:13px">Future AI features planned:<ul style="margin-top:10px;padding-left:18px;line-height:2"><li>GPT-4 company summarization</li><li>Automated job matching</li><li>Opportunity scoring (ML model)</li><li>NLP contract analysis</li><li>Competitor intelligence alerts</li><li>Recommendation engine</li></ul></div></div></div></div>
+  </div>
+</div>
+
+</main><!-- end main-content -->
+
+<!-- ══════════════════════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════════════════════════ -->
+
+<!-- Add Company Modal -->
+<div class="modal fade modal-aero" id="modal-add-company" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-building me-2" style="color:var(--amber-400)"></i>Add / Edit Company</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-aero">
+          <div class="aero-tabs">
+            <div class="aero-tab active" onclick="setFormTab('basic',this)">Basic Info</div>
+            <div class="aero-tab" onclick="setFormTab('facilities',this)">Facilities</div>
+            <div class="aero-tab" onclick="setFormTab('technology',this)">Technology</div>
+            <div class="aero-tab" onclick="setFormTab('bd',this)">BD & Certs</div>
+          </div>
+          <div id="ft-basic">
+            <div class="row g-3">
+              <div class="col-md-6"><label class="form-label">Company Name *</label><input class="form-control" id="co-name" placeholder="e.g. Hindustan Aeronautics Limited"></div>
+              <div class="col-md-3"><label class="form-label">Company Type *</label><select class="form-select" id="co-ctype"><option value="">-- Select --</option><option>PSU</option><option>Private</option><option>MNC</option><option>Startup</option><option>JV</option><option>Govt.</option></select></div>
+              <div class="col-md-3"><label class="form-label">Headquarters</label><input class="form-control" placeholder="City, State"></div>
+              <div class="col-md-6"><label class="form-label">Website</label><input class="form-control" type="url" placeholder="https://example.com"></div>
+              <div class="col-md-3"><label class="form-label">Annual Revenue</label><input class="form-control" placeholder="₹1,000 Cr (FY24)"></div>
+              <div class="col-md-3"><label class="form-label">Employee Count</label><input class="form-control" type="number" placeholder="10000"></div>
+              <div class="col-md-12"><label class="form-label">Industry Segments</label>
+                <div class="d-flex flex-wrap gap-2 mt-1" id="segment-checks">
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input" value="DEFENCE"> Defence</label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input" value="SPACE"> Space</label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input" value="UAV"> UAV/Drone</label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input" value="MFG"> Manufacturing</label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input" value="MRO"> MRO</label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input" value="AVIONICS"> Avionics</label>
+                  <label style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input" value="SOFTWARE"> Aerospace Software</label>
+                </div>
+              </div>
+              <div class="col-md-6"><label class="form-label">Parent Company</label><input class="form-control" placeholder="e.g. Tata Sons"></div>
+              <div class="col-md-6"><label class="form-label">Careers Page URL</label><input class="form-control" placeholder="https://company.com/careers"></div>
+              <div class="col-md-3 d-flex align-items-end pb-1 gap-3">
+                <label style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input"> GET Programme</label>
+                <label style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input"> Internships</label>
+              </div>
+              <div class="col-md-12"><label class="form-label">Notes / Key Intelligence</label><textarea class="form-control" rows="3" placeholder="Key products, recent news, strategic notes…"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-aero-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-aero-amber" onclick="saveCompany()"><i class="bi bi-floppy"></i> Save Company</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Opportunity Modal -->
+<div class="modal fade modal-aero" id="modal-add-opp" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="bi bi-funnel me-2" style="color:var(--amber-400)"></i>New Opportunity</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body form-aero">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label">Company *</label><select class="form-select"><option>-- Select Company --</option><option>HAL</option><option>BEL</option><option>ISRO</option><option>DRDO</option></select></div>
+          <div class="col-md-6"><label class="form-label">Project / Opportunity Name *</label><input class="form-control" placeholder="e.g. AESA Radar Software Module"></div>
+          <div class="col-md-4"><label class="form-label">Type</label><select class="form-select"><option>RFQ</option><option>Tender</option><option>Direct Sale</option><option>Partnership</option></select></div>
+          <div class="col-md-4"><label class="form-label">RFQ / Tender Number</label><input class="form-control" placeholder="RFQ-25-HAL-0001"></div>
+          <div class="col-md-4"><label class="form-label">Status</label><select class="form-select"><option>New</option><option>Qualified</option><option>Proposal</option><option>Negotiation</option><option>Won</option><option>Lost</option></select></div>
+          <div class="col-md-4"><label class="form-label">Value (₹ Cr)</label><input class="form-control" type="number" placeholder="0.00"></div>
+          <div class="col-md-4"><label class="form-label">Probability (%)</label><input class="form-control" type="number" min="0" max="100" placeholder="50"></div>
+          <div class="col-md-4"><label class="form-label">Submission Date</label><input class="form-control" type="date"></div>
+          <div class="col-md-12"><label class="form-label">Remarks</label><textarea class="form-control" rows="2"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-aero-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-aero-amber" onclick="saveOpportunity()"><i class="bi bi-floppy"></i> Save Opportunity</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Activity Modal -->
+<div class="modal fade modal-aero" id="modal-add-activity" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="bi bi-chat-dots me-2" style="color:var(--amber-400)"></i>Log Activity</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body form-aero">
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label">Activity Type</label><select class="form-select"><option>Call</option><option>Meeting</option><option>Email</option><option>Visit</option><option>Follow-Up</option><option>Note</option></select></div>
+          <div class="col-md-4"><label class="form-label">Company</label><select class="form-select"><option>-- Select --</option><option>HAL</option><option>BEL</option></select></div>
+          <div class="col-md-4"><label class="form-label">Contact</label><select class="form-select"><option>-- Select --</option><option>Anita Sharma (HAL)</option></select></div>
+          <div class="col-md-8"><label class="form-label">Subject *</label><input class="form-control" placeholder="e.g. GET Programme enquiry call"></div>
+          <div class="col-md-4"><label class="form-label">Date & Time *</label><input class="form-control" type="datetime-local"></div>
+          <div class="col-md-12"><label class="form-label">Description / Outcome</label><textarea class="form-control" rows="3"></textarea></div>
+          <div class="col-md-8"><label class="form-label">Next Action</label><input class="form-control" placeholder="e.g. Send resume by Jun 20"></div>
+          <div class="col-md-4"><label class="form-label">Next Action Date</label><input class="form-control" type="date"></div>
+          <div class="col-md-4"><label class="form-label">Set Reminder</label><input class="form-control" type="datetime-local"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-aero-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-aero-amber"><i class="bi bi-floppy"></i> Save Activity</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Job Modal (stub) -->
+<div class="modal fade modal-aero" id="modal-add-job" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="bi bi-briefcase me-2" style="color:var(--amber-400)"></i>Add Job / Career Opportunity</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body form-aero">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label">Company *</label><select class="form-select"><option>-- Select Company --</option><option>HAL</option><option>BEL</option><option>Cyient</option><option>ideaForge</option><option>Skyroot</option></select></div>
+          <div class="col-md-6"><label class="form-label">Position Title *</label><input class="form-control" placeholder="e.g. ML Engineer – Avionics"></div>
+          <div class="col-md-4"><label class="form-label">Department</label><input class="form-control" placeholder="Software / Avionics / BD"></div>
+          <div class="col-md-4"><label class="form-label">Location</label><input class="form-control" placeholder="Hyderabad"></div>
+          <div class="col-md-4"><label class="form-label">Job Type</label><select class="form-select"><option>Fulltime</option><option>GET</option><option>Internship</option><option>Contract</option><option>Apprentice</option></select></div>
+          <div class="col-md-3"><label class="form-label">Exp Min (yrs)</label><input class="form-control" type="number" placeholder="0"></div>
+          <div class="col-md-3"><label class="form-label">Exp Max (yrs)</label><input class="form-control" type="number" placeholder="2"></div>
+          <div class="col-md-3"><label class="form-label">Salary Min (₹ LPA)</label><input class="form-control" type="number"></div>
+          <div class="col-md-3"><label class="form-label">Salary Max (₹ LPA)</label><input class="form-control" type="number"></div>
+          <div class="col-md-8"><label class="form-label">Application URL</label><input class="form-control" type="url" placeholder="https://company.com/apply"></div>
+          <div class="col-md-4"><label class="form-label">Closing Date</label><input class="form-control" type="date"></div>
+          <div class="col-md-12"><label class="form-label">Skills Required</label><input class="form-control" placeholder="Python, ROS, CATIA, DO-178C…"></div>
+          <div class="col-md-12"><label class="form-label">My Application Status</label><select class="form-select"><option>Not Applied</option><option>Applied</option><option>Interview Scheduled</option><option>Offer Received</option><option>Accepted</option><option>Rejected</option></select></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-aero-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-aero-amber"><i class="bi bi-floppy"></i> Save Job</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Contact Modal -->
+<div class="modal fade modal-aero" id="modal-add-contact" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="bi bi-person-plus me-2" style="color:var(--amber-400)"></i>Add Contact</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body form-aero">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label">Full Name *</label><input class="form-control"></div>
+          <div class="col-md-6"><label class="form-label">Company *</label><select class="form-select"><option>-- Select --</option><option>HAL</option><option>BEL</option></select></div>
+          <div class="col-md-4"><label class="form-label">Designation</label><input class="form-control"></div>
+          <div class="col-md-4"><label class="form-label">Department</label><input class="form-control"></div>
+          <div class="col-md-4"><label class="form-label">Location</label><input class="form-control"></div>
+          <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" type="email"></div>
+          <div class="col-md-6"><label class="form-label">Mobile</label><input class="form-control"></div>
+          <div class="col-md-12"><label class="form-label">LinkedIn URL</label><input class="form-control" type="url"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-aero-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-aero-amber"><i class="bi bi-floppy"></i> Save Contact</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Tech Modal -->
+<div class="modal fade modal-aero" id="modal-add-tech" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="bi bi-cpu me-2" style="color:var(--amber-400)"></i>Technology Profile</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body form-aero">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label">Company *</label><select class="form-select"><option>-- Select --</option><option>HAL</option><option>BEL</option></select></div>
+          <div class="col-md-6"><label class="form-label">Technology Area</label><input class="form-control" placeholder="e.g. Avionics Software, Radar Systems"></div>
+          <div class="col-md-12"><label class="form-label d-block mb-2">Technology Flags</label>
+            <div class="d-flex flex-wrap gap-3">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input"> Uses AI</label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input"> Uses ML</label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input"> Embedded Systems</label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input"> Avionics SW</label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input"> Digital Twin</label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--space-100)"><input type="checkbox" class="form-check-input"> Additive Mfg</label>
+            </div>
+          </div>
+          <div class="col-md-6"><label class="form-label">CAD / Design Tools</label><input class="form-control" placeholder="CATIA V5, Siemens NX, SolidWorks"></div>
+          <div class="col-md-6"><label class="form-label">Simulation Tools</label><input class="form-control" placeholder="ANSYS Fluent, MATLAB, OpenFOAM"></div>
+          <div class="col-md-6"><label class="form-label">Programming Languages</label><input class="form-control" placeholder="Python, C++, MATLAB, Ada, C"></div>
+          <div class="col-md-6"><label class="form-label">Software Certifications</label><input class="form-control" placeholder="DO-178C, DO-254, CMMI L5"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-aero-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-aero-amber"><i class="bi bi-floppy"></i> Save Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════
+// AeroERP — Frontend JavaScript
+// ═══════════════════════════════════════════════════════════════
+
+const API = 'https://api.aeroerp.local/api';
+let authToken = localStorage.getItem('aeroerp_token') || 'DEMO_TOKEN';
+
+// ── NAV ──────────────────────────────────────────────────────
+function showPage(pageId) {
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+  const pageEl = document.getElementById('page-' + pageId);
+  if (pageEl) pageEl.classList.add('active');
+
+  const navEl = document.querySelector(`.nav-link[onclick*="${pageId}"]`);
+  if (navEl) navEl.classList.add('active');
+
+  const labels = {
+    dashboard:'Dashboard', companies:'Company Master', contacts:'Contacts',
+    opportunities:'Opportunities', jobs:'Job Tracker', technology:'Technology Tracker',
+    suppliers:'Supplier Tracker', projects:'Project Tracker', crm:'CRM & Follow-Up',
+    analytics:'Research & Analytics', documents:'Documents', reports:'Reports',
+    users:'Users & Roles', settings:'Settings'
+  };
+  document.getElementById('breadcrumb-current').textContent = labels[pageId] || pageId;
+
+  if (pageId === 'analytics') setTimeout(initAnalyticsCharts, 50);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+// ── COMPANY DATA (demo) ──────────────────────────────────────
+const COMPANIES = [
+  { id:1, name:'HAL', type:'PSU', seg:'DEFENCE', hq:'Bangalore', rev:'₹28,162 Cr', emp:'30,000', ai:true, get:true, intern:true, jobs:12 },
+  { id:2, name:'BEL', type:'PSU', seg:'AVIONICS', hq:'Bangalore', rev:'₹19,996 Cr', emp:'12,400', ai:true, get:true, intern:true, jobs:8 },
+  { id:3, name:'ISRO', type:'Govt.', seg:'SPACE', hq:'Bangalore', rev:'₹13,043 Cr', emp:'17,000', ai:true, get:true, intern:true, jobs:24 },
+  { id:4, name:'Honeywell India', type:'MNC', seg:'AVIONICS', hq:'Hyderabad', rev:'₹8,000 Cr', emp:'18,000', ai:true, get:true, intern:true, jobs:15 },
+  { id:5, name:'GE Aerospace', type:'MNC', seg:'SOFTWARE', hq:'Hyderabad', rev:'₹6,000 Cr', emp:'10,000', ai:true, get:true, intern:true, jobs:11 },
+  { id:6, name:'DRDO', type:'Govt. R&D', seg:'DEFENCE', hq:'New Delhi', rev:'₹23,264 Cr', emp:'30,000', ai:true, get:true, intern:true, jobs:30 },
+  { id:7, name:'Collins Aerospace', type:'MNC', seg:'AVIONICS', hq:'Hyderabad', rev:'₹4,500 Cr', emp:'6,000', ai:true, get:true, intern:true, jobs:9 },
+  { id:8, name:'Cyient', type:'Private', seg:'SOFTWARE', hq:'Hyderabad', rev:'₹7,200 Cr', emp:'15,000', ai:true, get:true, intern:true, jobs:20 },
+  { id:9, name:'Thales India', type:'MNC', seg:'AVIONICS', hq:'Delhi', rev:'₹3,000 Cr', emp:'2,000', ai:true, get:true, intern:true, jobs:5 },
+  { id:10, name:'Rolls-Royce India', type:'MNC', seg:'SOFTWARE', hq:'Bangalore', rev:'₹2,500 Cr', emp:'1,000', ai:true, get:true, intern:true, jobs:4 },
+  { id:11, name:'TASL', type:'Private', seg:'MFG', hq:'Hyderabad', rev:'₹3,500 Cr', emp:'2,500', ai:false, get:true, intern:true, jobs:6 },
+  { id:12, name:'ideaForge', type:'Private', seg:'UAV', hq:'Mumbai', rev:'₹355 Cr', emp:'400', ai:true, get:false, intern:true, jobs:7 },
+  { id:13, name:'Skyroot', type:'Startup', seg:'SPACE', hq:'Hyderabad', rev:'$51Mn raised', emp:'250', ai:true, get:false, intern:true, jobs:8 },
+  { id:14, name:'Agnikul', type:'Startup', seg:'SPACE', hq:'Chennai', rev:'$27Mn raised', emp:'150', ai:true, get:false, intern:true, jobs:6 },
+  { id:15, name:'Pixxel Space', type:'Startup', seg:'SPACE', hq:'Bangalore', rev:'$36Mn raised', emp:'150', ai:true, get:false, intern:true, jobs:5 },
+  { id:16, name:'Garuda Aerospace', type:'Startup', seg:'UAV', hq:'Chennai', rev:'₹150 Cr', emp:'350', ai:true, get:false, intern:true, jobs:10 },
+  { id:17, name:'BDL', type:'PSU', seg:'DEFENCE', hq:'Hyderabad', rev:'₹4,898 Cr', emp:'4,500', ai:false, get:true, intern:true, jobs:4 },
+  { id:18, name:'Wipro Aerospace', type:'Private', seg:'SOFTWARE', hq:'Bangalore', rev:'₹2,500 Cr', emp:'3,000', ai:true, get:true, intern:true, jobs:12 },
+  { id:19, name:'KPIT', type:'Private', seg:'SOFTWARE', hq:'Pune', rev:'₹5,200 Cr', emp:'13,000', ai:true, get:true, intern:true, jobs:14 },
+  { id:20, name:'Astra Microwave', type:'Private', seg:'AVIONICS', hq:'Hyderabad', rev:'₹630 Cr', emp:'700', ai:true, get:true, intern:true, jobs:5 },
+];
+
+const SEG_LABELS = { DEFENCE:'seg-defence', SPACE:'seg-space', UAV:'seg-uav', MFG:'seg-mfg', SOFTWARE:'seg-software', MRO:'seg-mro', AVIONICS:'seg-avionics' };
+const SEG_COLORS = { DEFENCE:'#EF9A9A', SPACE:'#80CBC4', UAV:'#FFCC80', MFG:'#A5D6A7', SOFTWARE:'#CE93D8', MRO:'#80CBC4', AVIONICS:'#90CAF9' };
+const CO_LOGO_BG = ['#1A3560','#2E7D32','#6A1B9A','#B71C1C','#1565C0','#00695C','#F57F17','#AD1457','#1B5E20','#4A148C'];
+
+function logoLetters(name) { return name.split(' ').slice(0,2).map(w=>w[0]).join(''); }
+
+function renderCompanyCards(list) {
+  const grid = document.getElementById('co-grid-view');
+  grid.innerHTML = list.map((c,i) => `
+    <div class="company-card" onclick="viewCompany(${c.id})">
+      <div class="cc-header">
+        <div class="cc-logo" style="background:${CO_LOGO_BG[i%CO_LOGO_BG.length]}">${logoLetters(c.name)}</div>
+        <div>
+          <div class="cc-name">${c.name}</div>
+          <div class="cc-type">${c.type} · ${c.hq}</div>
+        </div>
+        <div class="cc-metric"><span>${c.jobs}</span><small>Open Jobs</small></div>
+      </div>
+      <div class="cc-body"><b>Revenue:</b> ${c.rev} &nbsp;&nbsp; <b>Staff:</b> ${c.emp}</div>
+      <div class="cc-footer">
+        <span class="badge-seg ${SEG_LABELS[c.seg]||'seg-mfg'}">${c.seg}</span>
+        ${c.ai ? '<span class="tech-chip ai">✓ AI</span>' : ''}
+        ${c.get ? '<span class="tech-chip cad">✓ GET</span>' : ''}
+        ${c.intern ? '<span class="tech-chip ml">✓ Intern</span>' : ''}
+      </div>
+    </div>`).join('');
+}
+
+function filterCompanies() {
+  const name = document.getElementById('co-search').value.toLowerCase();
+  const type = document.getElementById('co-type').value;
+  const seg  = document.getElementById('co-segment').value;
+  const ai   = document.getElementById('co-ai').value;
+  const get  = document.getElementById('co-get').value;
+  let filtered = COMPANIES.filter(c =>
+    (!name || c.name.toLowerCase().includes(name)) &&
+    (!type || c.type === type) &&
+    (!seg  || c.seg === seg) &&
+    (!ai   || c.ai) &&
+    (!get  || c.get)
+  );
+  document.getElementById('co-count').textContent = filtered.length + ' companies';
+  renderCompanyCards(filtered);
+}
+
+function clearFilters() {
+  ['co-search','co-type','co-segment','co-ai','co-get'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  filterCompanies();
+}
+
+function setCompanyView(v) {
+  document.getElementById('co-grid-view').style.display = v==='grid' ? 'grid' : 'none';
+  document.getElementById('co-list-view').style.display = v==='list' ? 'block' : 'none';
+}
+
+function viewCompany(id) { showToast('Opening company #' + id + '…', 'info'); }
+
+// ── JOB TABS ─────────────────────────────────────────────────
+function setJobTab(tab, el) {
+  document.querySelectorAll('#page-jobs .aero-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── CRM TABS ─────────────────────────────────────────────────
+function setCrmTab(tab, el) {
+  document.querySelectorAll('#page-crm .aero-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── OPP VIEW ──────────────────────────────────────────────────
+function setOppView(v) {
+  document.getElementById('opp-kanban').style.display = v==='kanban' ? 'grid' : 'none';
+}
+
+// ── FORM TABS ─────────────────────────────────────────────────
+function setFormTab(tab, el) {
+  document.querySelectorAll('#modal-add-company .aero-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── GLOBAL SEARCH ─────────────────────────────────────────────
+function globalSearch(q) {
+  if (q.length < 2) return;
+  // In real app: call /api/Company/search?q=... 
+}
+
+// ── SAVE COMPANY (demo) ───────────────────────────────────────
+function saveCompany() {
+  const name = document.getElementById('co-name')?.value;
+  if (!name) { showToast('Company name is required', 'error'); return; }
+  showToast(`Company "${name}" saved successfully!`, 'success');
+  bootstrap.Modal.getInstance(document.getElementById('modal-add-company'))?.hide();
+}
+
+function saveOpportunity() {
+  showToast('Opportunity saved to pipeline!', 'success');
+  bootstrap.Modal.getInstance(document.getElementById('modal-add-opp'))?.hide();
+}
+
+// ── REPORTS ───────────────────────────────────────────────────
+function generateReport(type) {
+  showToast('Generating ' + type + ' report…', 'info');
+  setTimeout(() => showToast('Report ready for download!', 'success'), 1500);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function showToast(msg, type='info') {
+  const icons = { success:'✓', error:'✕', info:'ℹ' };
+  const t = document.createElement('div');
+  t.className = `aero-toast ${type}`;
+  t.innerHTML = `<span style="font-size:16px;flex-shrink:0">${icons[type]||'ℹ'}</span><span>${msg}</span>`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+function logout() { showToast('Logging out…','info'); setTimeout(()=>{ localStorage.clear(); location.reload(); },800); }
+function refreshData() { showToast('Data refreshed','success'); }
+function toggleFullscreen() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
+
+// ── CHART HELPERS ──────────────────────────────────────────────
+const CHART_DEFAULTS = {
+  plugins: { legend: { labels: { color: '#A0BDE0', font: { size: 11 } } } },
+  scales:  { x: { ticks: { color: '#8B9BB4', font:{size:11} }, grid: { color: 'rgba(255,255,255,0.05)' } },
+             y: { ticks: { color: '#8B9BB4', font:{size:11} }, grid: { color: 'rgba(255,255,255,0.05)' } } }
+};
+
+function initDashboardCharts() {
+  // Segment distribution
+  new Chart(document.getElementById('chart-segment'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Defence', 'Software & Eng', 'Space', 'UAV/Drone', 'Manufacturing', 'Commercial', 'MRO'],
+      datasets: [{ data: [22, 12, 9, 14, 8, 7, 4],
+        backgroundColor: ['#EF5350','#CE93D8','#26A69A','#FFB74D','#66BB6A','#42A5F5','#80CBC4'],
+        borderWidth: 2, borderColor: '#0D1F3C' }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins: { legend: { position:'right', labels: { color:'#A0BDE0', font:{size:11}, boxWidth:12 } } } }
+  });
+
+  // Pipeline
+  new Chart(document.getElementById('chart-pipeline'), {
+    type: 'bar',
+    data: {
+      labels: ['New', 'Qualified', 'Proposal', 'Negotiation', 'Won', 'Lost'],
+      datasets: [{ label: 'Count', data: [3,2,3,2,2,1],
+        backgroundColor: ['#9E9E9E','#42A5F5','#AB47BC','#FFD54F','#66BB6A','#EF5350'],
+        borderRadius: 6 }]
+    },
+    options: { ...CHART_DEFAULTS, responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+  });
+
+  // Tech adoption
+  new Chart(document.getElementById('chart-tech'), {
+    type: 'bar',
+    data: {
+      labels: ['AI / ML', 'Embedded SW', 'Avionics SW', 'Digital Twin', 'CAD (CATIA/NX)', 'DO-178C', 'Additive Mfg', 'ROS / UAV'],
+      datasets: [{ label: 'Companies', data: [25, 34, 28, 18, 38, 22, 12, 16],
+        backgroundColor: '#2E6DA4', borderRadius: 6, hoverBackgroundColor: '#F5A623' }]
+    },
+    options: { ...CHART_DEFAULTS, indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+  });
+}
+
+function initAnalyticsCharts() {
+  const canvases = ['chart-revenue','chart-drone-growth','chart-space-growth','chart-hiring'];
+  canvases.forEach(id => { const c = document.getElementById(id); if(c && c._chart) c._chart.destroy(); });
+
+  // Revenue by segment
+  const rv = document.getElementById('chart-revenue');
+  if (rv && !rv._aero_init) {
+    rv._aero_init = true;
+    new Chart(rv, { type:'bar', data: { labels:['PSU/Govt','MNC','Private Large','Startups'],
+      datasets:[{ label:'Revenue ₹ Cr', data:[95000,24000,18000,800],
+        backgroundColor:['#EF5350','#42A5F5','#66BB6A','#FFB74D'], borderRadius:6 }] },
+      options:{...CHART_DEFAULTS, responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}} });
+  }
+
+  // Drone growth
+  const dg = document.getElementById('chart-drone-growth');
+  if (dg && !dg._aero_init) {
+    dg._aero_init = true;
+    new Chart(dg, { type:'line', data: {
+      labels:['2020','2021','2022','2023','2024','2025E'],
+      datasets:[{ label:'Market Size (₹ Cr)', data:[300,580,1200,2600,5400,9000],
+        borderColor:'#F5A623', backgroundColor:'rgba(245,166,35,0.1)', borderWidth:2, fill:true, tension:0.4, pointBackgroundColor:'#F5A623' }] },
+      options:{...CHART_DEFAULTS, responsive:true, maintainAspectRatio:false} });
+  }
+
+  // Space growth
+  const sg = document.getElementById('chart-space-growth');
+  if (sg && !sg._aero_init) {
+    sg._aero_init = true;
+    new Chart(sg, { type:'line', data: {
+      labels:['2021','2022','2023','2024','2025E'],
+      datasets:[{ label:'Startups funded', data:[20,45,90,150,220],
+        borderColor:'#26A69A', backgroundColor:'rgba(38,166,154,0.1)', borderWidth:2, fill:true, tension:0.4, pointBackgroundColor:'#26A69A' }] },
+      options:{...CHART_DEFAULTS, responsive:true, maintainAspectRatio:false} });
+  }
+
+  // Hiring trends
+  const ht = document.getElementById('chart-hiring');
+  if (ht && !ht._aero_init) {
+    ht._aero_init = true;
+    new Chart(ht, { type:'bar', data: {
+      labels:['Avionics SW','Defence Eng','ML/AI Aero','Drone Tech','Space Tech','MRO Tech','Structures','Embedded'],
+      datasets:[{ label:'Demand 2025 (indexed)', data:[95,88,92,78,85,72,65,90],
+        backgroundColor:'#2E6DA4', borderRadius:6, hoverBackgroundColor:'#F5A623' }] },
+      options:{...CHART_DEFAULTS, responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}} });
+  }
+
+  // Activity summary
+  const ac = document.getElementById('chart-activity');
+  if (ac && !ac._aero_init) {
+    ac._aero_init = true;
+    new Chart(ac, { type:'doughnut', data: {
+      labels:['Calls','Emails','Meetings','Follow-Ups','Notes'],
+      datasets:[{ data:[12,18,5,8,3],
+        backgroundColor:['#42A5F5','#66BB6A','#FFB74D','#CE93D8','#EF5350'], borderWidth:2, borderColor:'#0D1F3C' }] },
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{color:'#A0BDE0',font:{size:10},boxWidth:10}}}} });
+  }
+
+  // Tech Radar
+  const tr = document.getElementById('chart-tech-radar');
+  if (tr && !tr._aero_init) {
+    tr._aero_init = true;
+    new Chart(tr, { type:'radar', data: {
+      labels:['AI/ML','DO-178C','Digital Twin','Additive Mfg','Embedded','Avionics SW','CAD Tools','Cloud'],
+      datasets:[
+        { label:'India Industry Avg', data:[72,62,55,40,85,78,92,48], borderColor:'#2E6DA4', backgroundColor:'rgba(46,95,158,0.1)', pointBackgroundColor:'#2E6DA4', borderWidth:2 },
+        { label:'Global Benchmark', data:[88,80,75,68,90,85,95,78], borderColor:'#F5A623', backgroundColor:'rgba(245,166,35,0.1)', pointBackgroundColor:'#F5A623', borderWidth:2, borderDash:[4,4] }
+      ] },
+      options:{responsive:true, maintainAspectRatio:false, scales:{ r:{ ticks:{color:'#8B9BB4',font:{size:10},backdropColor:'transparent'}, grid:{color:'rgba(255,255,255,0.1)'}, pointLabels:{color:'#A0BDE0',font:{size:10}}, suggestedMin:0, suggestedMax:100 } }, plugins:{legend:{labels:{color:'#A0BDE0',font:{size:11}}}}} });
+  }
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderCompanyCards(COMPANIES);
+  initDashboardCharts();
+  setTimeout(initAnalyticsCharts, 200);
+  showToast('AeroERP loaded — Welcome, Mahin!', 'success');
+});
+</script>
+</body>
+</html>
