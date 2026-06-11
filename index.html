@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroERP — India Aerospace Industry Intelligence ERP</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root {
+  --navy:#050C18; --navy2:#0A1628; --navy3:#0D1F3C;
+  --blue:#2E5F9E; --blue2:#5B8DC8; --amber:#E87722; --amber2:#F5A623;
+  --white:#F5F7FA; --muted:#8B9BB4;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(5,12,24,0.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,0.07);padding:14px 0;}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1A3560,var(--amber));display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;overflow:hidden;}
+.nav-logo::after{content:'';position:absolute;inset:0;background:conic-gradient(from 0deg,transparent 75%,rgba(245,166,35,0.6) 90%,transparent 100%);animation:radar 3s linear infinite;}
+@keyframes radar{to{transform:rotate(360deg);}}
+.nav-brand span{font-size:17px;font-weight:800;color:#fff;}
+.nav-links{display:flex;gap:6px;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;transition:all .2s;}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,0.07);}
+.btn-gh{background:var(--blue);color:#fff!important;padding:8px 16px!important;border-radius:8px!important;}
+.btn-gh:hover{background:var(--blue2)!important;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:100px 24px 60px;}
+.hero::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(46,95,158,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(46,95,158,0.07) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
+.orb1{width:500px;height:500px;background:rgba(46,95,158,0.18);top:-100px;right:-100px;animation:float 9s ease-in-out infinite alternate;}
+.orb2{width:350px;height:350px;background:rgba(232,119,34,0.1);bottom:-50px;left:-80px;animation:float 7s ease-in-out infinite alternate-reverse;}
+@keyframes float{to{transform:translate(40px,30px) scale(1.08);}}
+.hero-inner{max-width:900px;text-align:center;position:relative;z-index:2;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(46,95,158,0.2);border:1px solid rgba(46,95,158,0.4);border-radius:30px;padding:6px 16px;font-size:12px;color:var(--blue2);font-weight:600;margin-bottom:28px;letter-spacing:.5px;}
+.hero h1{font-size:clamp(36px,6vw,72px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:22px;}
+.hero h1 .accent{background:linear-gradient(135deg,var(--amber),var(--amber2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:clamp(15px,2vw,19px);color:var(--muted);line-height:1.7;max-width:680px;margin:0 auto 38px;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.btn-primary-aero{background:linear-gradient(135deg,var(--blue),#1A3560);color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-size:15px;font-weight:700;display:inline-flex;align-items:center;gap:8px;transition:all .25s;border:none;}
+.btn-primary-aero:hover{background:linear-gradient(135deg,var(--blue2),var(--blue));color:#fff;transform:translateY(-2px);box-shadow:0 8px 28px rgba(46,95,158,0.4);}
+.btn-ghost-aero{background:rgba(255,255,255,0.07);color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,0.12);transition:all .25s;}
+.btn-ghost-aero:hover{background:rgba(255,255,255,0.13);color:#fff;transform:translateY(-2px);}
+.hero-stats{display:flex;gap:40px;justify-content:center;margin-top:56px;flex-wrap:wrap;}
+.hero-stat .num{font-size:36px;font-weight:900;color:var(--amber2);}
+.hero-stat .lbl{font-size:12px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.8px;}
+
+/* ── SECTIONS ── */
+section{padding:90px 24px;}
+.section-inner{max-width:1200px;margin:0 auto;}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--amber);margin-bottom:12px;}
+.section-title{font-size:clamp(26px,4vw,44px);font-weight:800;letter-spacing:-1px;line-height:1.15;margin-bottom:16px;}
+.section-sub{font-size:16px;color:var(--muted);max-width:600px;line-height:1.7;}
+
+/* ── MODULES GRID ── */
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:50px;}
+.module-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:26px;transition:all .25s;position:relative;overflow:hidden;}
+.module-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;}
+.module-card:hover{border-color:rgba(255,255,255,0.15);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+.mc-num{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.mc-icon{font-size:28px;margin-bottom:12px;}
+.mc-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;}
+.mc-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.mc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:14px;}
+.mc-tag{background:rgba(255,255,255,0.06);border-radius:5px;padding:3px 9px;font-size:10px;color:var(--blue2);font-weight:600;}
+.c1::before{background:linear-gradient(90deg,#EF5350,#E53935);}
+.c2::before{background:linear-gradient(90deg,#42A5F5,#1E88E5);}
+.c3::before{background:linear-gradient(90deg,var(--amber),var(--amber2));}
+.c4::before{background:linear-gradient(90deg,#66BB6A,#43A047);}
+.c5::before{background:linear-gradient(90deg,#CE93D8,#AB47BC);}
+.c6::before{background:linear-gradient(90deg,#26A69A,#00897B);}
+.c7::before{background:linear-gradient(90deg,#FFA726,#FB8C00);}
+.c8::before{background:linear-gradient(90deg,#78909C,#546E7A);}
+.c9::before{background:linear-gradient(90deg,#EC407A,#D81B60);}
+.c10::before{background:linear-gradient(90deg,#5C6BC0,#3949AB);}
+
+/* ── TECH STACK ── */
+.stack-section{background:var(--navy2);}
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:48px;}
+.stack-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:22px;text-align:center;transition:all .2s;}
+.stack-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+.stack-card .si{font-size:32px;margin-bottom:10px;}
+.stack-card .st{font-size:14px;font-weight:700;color:#fff;margin-bottom:5px;}
+.stack-card .sd{font-size:12px;color:var(--muted);}
+
+/* ── COMPANIES ── */
+.companies-section{background:var(--navy);}
+.companies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:48px;}
+.co-pill{background:var(--navy3);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:10px;transition:all .2s;}
+.co-pill:hover{border-color:var(--blue);background:rgba(46,95,158,0.12);}
+.co-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.co-name{font-size:12px;font-weight:600;color:var(--white);}
+.co-type{font-size:10px;color:var(--muted);}
+
+/* ── DB SCHEMA ── */
+.schema-section{background:var(--navy2);}
+.tables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:48px;}
+.table-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;}
+.table-card .tn{font-size:13px;font-weight:700;color:var(--amber2);font-family:monospace;margin-bottom:10px;}
+.table-card ul{list-style:none;padding:0;}
+.table-card ul li{font-size:11px;color:var(--muted);padding:2px 0;display:flex;align-items:center;gap:6px;}
+.table-card ul li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue2);flex-shrink:0;}
+
+/* ── ROLES ── */
+.roles-table{width:100%;border-collapse:collapse;margin-top:40px;font-size:13px;}
+.roles-table th{background:rgba(255,255,255,0.05);color:var(--blue2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:12px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.07);}
+.roles-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--white);}
+.roles-table tr:hover td{background:rgba(255,255,255,0.03);}
+.badge-r{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.r-sa{background:rgba(239,83,80,.2);color:#EF9A9A;}
+.r-a{background:rgba(245,166,35,.2);color:#FFE082;}
+.r-bd{background:rgba(46,95,158,.2);color:#90CAF9;}
+.r-an{background:rgba(171,71,188,.2);color:#CE93D8;}
+.r-v{background:rgba(100,100,100,.2);color:#ccc;}
+
+/* ── ROADMAP ── */
+.roadmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:48px;}
+.phase-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:24px;}
+.phase-num{font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.phase-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:12px;}
+.phase-weeks{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.phase-list{list-style:none;padding:0;}
+.phase-list li{font-size:12px;color:var(--muted);padding:3px 0;display:flex;gap:7px;}
+.phase-list li::before{content:'→';color:var(--blue2);flex-shrink:0;}
+
+/* ── AI FEATURES ── */
+.ai-section{background:var(--navy2);}
+.ai-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:48px;}
+.ai-card{background:var(--navy3);border:1px solid rgba(171,71,188,0.2);border-radius:12px;padding:22px;transition:all .2s;}
+.ai-card:hover{border-color:rgba(171,71,188,0.5);transform:translateY(-2px);}
+.ai-card .ai-icon{font-size:26px;margin-bottom:10px;}
+.ai-card .ai-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:7px;}
+.ai-card .ai-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.ai-card .ai-tech{font-size:11px;color:#CE93D8;margin-top:10px;font-family:monospace;}
+
+/* ── AUTHOR ── */
+.author-section{background:var(--navy);border-top:1px solid rgba(255,255,255,0.07);}
+.author-card{background:var(--navy3);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:40px;display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;}
+.author-avatar{width:80px;height:80px;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--amber));display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;flex-shrink:0;}
+.author-name{font-size:22px;font-weight:800;color:#fff;margin-bottom:5px;}
+.author-title{font-size:13px;color:var(--muted);margin-bottom:14px;}
+.author-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.atag{background:rgba(46,95,158,0.2);border:1px solid rgba(46,95,158,0.3);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--blue2);font-weight:600;}
+.author-links{display:flex;gap:10px;flex-wrap:wrap;}
+.author-links a{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;transition:all .2s;}
+.author-links a:hover{background:rgba(255,255,255,0.12);color:#fff;}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);padding:30px 24px;text-align:center;}
+footer p{font-size:12px;color:var(--muted);}
+footer a{color:var(--blue2);text-decoration:none;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){.nav-links{display:none;}.hero h1{letter-spacing:-1px;}.author-card{flex-direction:column;}.hero-stats{gap:24px;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="#">
+      <div class="nav-logo">✈</div>
+      <span>AeroERP</span>
+    </a>
+    <div class="nav-links">
+      <a href="#modules">Modules</a>
+      <a href="#stack">Tech Stack</a>
+      <a href="#companies">Companies</a>
+      <a href="#schema">Database</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#author">Author</a>
+      <a href="https://github.com/mahin-aeroai/AeroERP" target="_blank" class="btn-gh"><i class="bi bi-github"></i> GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">✈ India Aerospace Industry Intelligence System</div>
+    <h1>The Complete <span class="accent">Aerospace ERP</span><br>Built for India</h1>
+    <p>A full-stack Business Development & Industry Intelligence platform covering Defence, Space, UAV, Avionics, and Aerospace Manufacturing — 58 companies, 10 modules, live analytics.</p>
+    <div class="hero-btns">
+      <a href="https://github.com/mahin-aeroai/AeroERP" target="_blank" class="btn-primary-aero"><i class="bi bi-github"></i> View on GitHub</a>
+      <a href="#modules" class="btn-ghost-aero"><i class="bi bi-grid-3x3-gap"></i> Explore Modules</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">58</div><div class="lbl">Companies</div></div>
+      <div class="hero-stat"><div class="num">10</div><div class="lbl">Modules</div></div>
+      <div class="hero-stat"><div class="num">13</div><div class="lbl">DB Tables</div></div>
+      <div class="hero-stat"><div class="num">60+</div><div class="lbl">API Endpoints</div></div>
+      <div class="hero-stat"><div class="num">7</div><div class="lbl">Industry Segments</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section id="modules">
+  <div class="section-inner">
+    <div class="section-label">System Modules</div>
+    <div class="section-title">10 Integrated Intelligence Modules</div>
+    <div class="section-sub">Every module is backed by Oracle DB tables, .NET 8 REST endpoints, and a fully rendered Bootstrap 5 UI screen.</div>
+    <div class="modules-grid">
+      <div class="module-card c1">
+        <div class="mc-num">Module 01</div>
+        <div class="mc-icon">🏢</div>
+        <div class="mc-title">Company Master</div>
+        <div class="mc-desc">58+ Indian aerospace companies across 7 segments. Revenue, employees, certifications, facilities, GET programmes, careers links.</div>
+        <div class="mc-tags"><span class="mc-tag">Grid View</span><span class="mc-tag">List View</span><span class="mc-tag">Filters</span><span class="mc-tag">Export CSV</span></div>
+      </div>
+      <div class="module-card c2">
+        <div class="mc-num">Module 02</div>
+        <div class="mc-icon">👥</div>
+        <div class="mc-title">Contact Management</div>
+        <div class="mc-desc">Full aerospace industry contact directory. Designation, department, email, LinkedIn, reporting manager, communication history.</div>
+        <div class="mc-tags"><span class="mc-tag">CRM Linked</span><span class="mc-tag">Activity Log</span><span class="mc-tag">Search</span></div>
+      </div>
+      <div class="module-card c3">
+        <div class="mc-num">Module 03</div>
+        <div class="mc-icon">📊</div>
+        <div class="mc-title">Opportunity Tracker</div>
+        <div class="mc-desc">Full BD pipeline — RFQ, Tender, Direct Sale, Partnership. Kanban board with drag-and-drop status. ₹840 Cr pipeline tracked.</div>
+        <div class="mc-tags"><span class="mc-tag">Kanban Board</span><span class="mc-tag">Pipeline Value</span><span class="mc-tag">Win Rate</span></div>
+      </div>
+      <div class="module-card c4">
+        <div class="mc-num">Module 04</div>
+        <div class="mc-icon">💼</div>
+        <div class="mc-title">Job & Career Tracker</div>
+        <div class="mc-desc">Personal application status tracking across 47+ open roles. GET programmes, internships, salary ranges, closing dates, interview tracking.</div>
+        <div class="mc-tags"><span class="mc-tag">My Applications</span><span class="mc-tag">GET Programs</span><span class="mc-tag">Reminders</span></div>
+      </div>
+      <div class="module-card c5">
+        <div class="mc-num">Module 05</div>
+        <div class="mc-icon">🤖</div>
+        <div class="mc-title">Technology Tracker</div>
+        <div class="mc-desc">AI/ML adoption, Digital Twin, Additive Manufacturing, DO-178C, CAD tools, simulation software — per company intelligence matrix.</div>
+        <div class="mc-tags"><span class="mc-tag">Tech Radar</span><span class="mc-tag">AI Companies</span><span class="mc-tag">DO-178C</span></div>
+      </div>
+      <div class="module-card c6">
+        <div class="mc-num">Module 06</div>
+        <div class="mc-icon">📦</div>
+        <div class="mc-title">Supplier Tracker</div>
+        <div class="mc-desc">Approved vendor database with AS9100D, NADCAP certifications. Full audit workflow — pending, cleared, failed audit status tracking.</div>
+        <div class="mc-tags"><span class="mc-tag">Audit Workflow</span><span class="mc-tag">AS9100D</span><span class="mc-tag">NADCAP</span></div>
+      </div>
+      <div class="module-card c7">
+        <div class="mc-num">Module 07</div>
+        <div class="mc-icon">🚀</div>
+        <div class="mc-title">Project Tracker</div>
+        <div class="mc-desc">Active aerospace projects — Tejas Mk1A, Gaganyaan, Vikram-1. Milestone tracking, sector classification, value, status.</div>
+        <div class="mc-tags"><span class="mc-tag">Milestones</span><span class="mc-tag">Defence/Space/UAV</span><span class="mc-tag">₹ Value</span></div>
+      </div>
+      <div class="module-card c8">
+        <div class="mc-num">Module 08</div>
+        <div class="mc-icon">📁</div>
+        <div class="mc-title">Document Management</div>
+        <div class="mc-desc">Store brochures, annual reports, certifications, NDAs, drawings, presentations. Version control, expiry tracking, confidentiality flags.</div>
+        <div class="mc-tags"><span class="mc-tag">Upload</span><span class="mc-tag">Versioning</span><span class="mc-tag">NDA</span></div>
+      </div>
+      <div class="module-card c9">
+        <div class="mc-num">Module 09</div>
+        <div class="mc-icon">📈</div>
+        <div class="mc-title">Research & Analytics</div>
+        <div class="mc-desc">Revenue analysis, hiring trends, drone industry growth (₹300Cr→₹9000Cr), space sector startups, tech adoption radar, company comparison matrix.</div>
+        <div class="mc-tags"><span class="mc-tag">Chart.js</span><span class="mc-tag">Radar Chart</span><span class="mc-tag">Comparison</span></div>
+      </div>
+      <div class="module-card c10">
+        <div class="mc-num">Module 10</div>
+        <div class="mc-icon">📞</div>
+        <div class="mc-title">CRM & Follow-Up</div>
+        <div class="mc-desc">Call logs, meeting notes, email history, visit reports. Reminder system with 7-day rolling view, activity type filtering, outcome tracking.</div>
+        <div class="mc-tags"><span class="mc-tag">Reminders</span><span class="mc-tag">Call Logs</span><span class="mc-tag">Timeline</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack" class="stack-section">
+  <div class="section-inner">
+    <div class="section-label">Technology Stack</div>
+    <div class="section-title">Enterprise-Grade Architecture</div>
+    <div class="section-sub">3-tier architecture — Browser → .NET 8 API → Oracle DB. JWT auth, Dapper ORM, Chart.js 4.4.</div>
+    <div class="stack-grid">
+      <div class="stack-card"><div class="si">🌐</div><div class="st">HTML5 + Bootstrap 5.3</div><div class="sd">Responsive dark aerospace UI, single-page app shell</div></div>
+      <div class="stack-card"><div class="si">📊</div><div class="st">Chart.js 4.4</div><div class="sd">Doughnut, bar, line, radar charts — all live data</div></div>
+      <div class="stack-card"><div class="si">⚡</div><div class="st">.NET 8 Web API</div><div class="sd">60+ REST endpoints, Swagger UI, Dapper ORM</div></div>
+      <div class="stack-card"><div class="si">🗄️</div><div class="st">Oracle DB 19c/21c</div><div class="sd">13 tables, sequences, views, partitioning</div></div>
+      <div class="stack-card"><div class="si">🔐</div><div class="st">JWT Bearer Auth</div><div class="sd">HS256, BCrypt passwords, role-based policies</div></div>
+      <div class="stack-card"><div class="si">📄</div><div class="st">NPOI + iTextSharp</div><div class="sd">Excel & PDF report generation</div></div>
+      <div class="stack-card"><div class="si">🔍</div><div class="st">Global Search</div><div class="sd">Company, tech, cert, contact, project search</div></div>
+      <div class="stack-card"><div class="si">📋</div><div class="st">Audit Logging</div><div class="sd">Every INSERT/UPDATE/DELETE logged to AUD_LOG</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPANIES -->
+<section id="companies" class="companies-section">
+  <div class="section-inner">
+    <div class="section-label">Company Intelligence</div>
+    <div class="section-title">58 Indian Aerospace Companies Tracked</div>
+    <div class="section-sub">Defence PSUs, space startups, MNC subsidiaries, drone companies, avionics firms, and aerospace software houses — all in one database.</div>
+    <div class="companies-grid">
+      <div class="co-pill"><div class="co-dot" style="background:#EF5350"></div><div><div class="co-name">HAL</div><div class="co-type">PSU · Defence</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#EF5350"></div><div><div class="co-name">BEL</div><div class="co-type">PSU · Avionics</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#26A69A"></div><div><div class="co-name">ISRO</div><div class="co-type">Govt · Space</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#EF5350"></div><div><div class="co-name">DRDO</div><div class="co-type">Govt · Defence</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#42A5F5"></div><div><div class="co-name">Honeywell India</div><div class="co-type">MNC · Avionics</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#42A5F5"></div><div><div class="co-name">GE Aerospace</div><div class="co-type">MNC · Software</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#CE93D8"></div><div><div class="co-name">Cyient</div><div class="co-type">Private · Software</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#42A5F5"></div><div><div class="co-name">Collins Aerospace</div><div class="co-type">MNC · Avionics</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#42A5F5"></div><div><div class="co-name">Thales India</div><div class="co-type">MNC · Avionics</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#42A5F5"></div><div><div class="co-name">Rolls-Royce India</div><div class="co-type">MNC · Software</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#FFB74D"></div><div><div class="co-name">ideaForge</div><div class="co-type">Private · UAV</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#FFB74D"></div><div><div class="co-name">Garuda Aerospace</div><div class="co-type">Startup · UAV</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#26A69A"></div><div><div class="co-name">Skyroot Aerospace</div><div class="co-type">Startup · Space</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#26A69A"></div><div><div class="co-name">Agnikul Cosmos</div><div class="co-type">Startup · Space</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#26A69A"></div><div><div class="co-name">Pixxel Space</div><div class="co-type">Startup · Space</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#CE93D8"></div><div><div class="co-name">KPIT</div><div class="co-type">Private · Software</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#CE93D8"></div><div><div class="co-name">Wipro Aerospace</div><div class="co-type">Private · Software</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#EF5350"></div><div><div class="co-name">BDL</div><div class="co-type">PSU · Defence</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#EF5350"></div><div><div class="co-name">TASL</div><div class="co-type">Private · Mfg</div></div></div>
+      <div class="co-pill"><div class="co-dot" style="background:#EF5350"></div><div><div class="co-name">Astra Microwave</div><div class="co-type">Private · Avionics</div></div></div>
+      <div class="co-pill" style="border-style:dashed;justify-content:center"><div class="co-name" style="color:var(--muted);font-size:11px">+ 38 more in database</div></div>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:28px;">
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:50%;background:#EF5350;display:inline-block"></span>Defence / Avionics</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:50%;background:#26A69A;display:inline-block"></span>Space</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:50%;background:#FFB74D;display:inline-block"></span>UAV / Drone</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:50%;background:#42A5F5;display:inline-block"></span>MNC</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:50%;background:#CE93D8;display:inline-block"></span>Aerospace Software</span>
+    </div>
+  </div>
+</section>
+
+<!-- DB SCHEMA -->
+<section id="schema" class="schema-section">
+  <div class="section-inner">
+    <div class="section-label">Database Schema</div>
+    <div class="section-title">Oracle DB — 13 Tables, 60+ Columns</div>
+    <div class="section-sub">Normalised schema with sequences, foreign keys, 15 indexes, and 2 materialised views for dashboard KPIs.</div>
+    <div class="tables-grid">
+      <div class="table-card"><div class="tn">MST_COMPANY</div><ul><li>COMPANY_ID (PK)</li><li>COMPANY_NAME, TYPE</li><li>HEADQUARTERS, WEBSITE</li><li>ANNUAL_REVENUE, EMPLOYEES</li><li>CERTIFICATIONS, GET_PROGRAM</li><li>CAREERS_URL, NOTES</li></ul></div>
+      <div class="table-card"><div class="tn">CRM_CONTACT</div><ul><li>CONTACT_ID (PK)</li><li>COMPANY_ID (FK)</li><li>CONTACT_NAME, DESIGNATION</li><li>EMAIL, MOBILE, LINKEDIN</li><li>CONTACT_STATUS</li><li>LAST_COMM_DATE</li></ul></div>
+      <div class="table-card"><div class="tn">BIZ_OPPORTUNITY</div><ul><li>OPP_ID (PK)</li><li>COMPANY_ID, CONTACT_ID (FK)</li><li>RFQ_NUMBER, TENDER_NUMBER</li><li>OPP_VALUE, PROBABILITY_PCT</li><li>STATUS, SUBMISSION_DATE</li><li>EXPECTED_AWARD_DATE</li></ul></div>
+      <div class="table-card"><div class="tn">JOB_POSTING</div><ul><li>JOB_ID (PK)</li><li>COMPANY_ID (FK)</li><li>POSITION_TITLE, DEPT</li><li>SALARY_MIN, SALARY_MAX</li><li>STATUS, JOB_TYPE</li><li>MY_APP_STATUS (personal)</li></ul></div>
+      <div class="table-card"><div class="tn">TECH_PROFILE</div><ul><li>TECH_ID (PK)</li><li>COMPANY_ID (FK, 1:1)</li><li>USES_AI, USES_ML</li><li>USES_DIGITAL_TWIN</li><li>CAD_TOOLS, SIM_TOOLS</li><li>CERTIFICATIONS_SW</li></ul></div>
+      <div class="table-card"><div class="tn">SUP_SUPPLIER</div><ul><li>SUPPLIER_ID (PK)</li><li>PRODUCTS_OFFERED</li><li>CERTIFICATIONS</li><li>APPROVAL_STATUS</li><li>AUDIT_STATUS</li><li>LAST_AUDIT_DATE</li></ul></div>
+      <div class="table-card"><div class="tn">PRJ_PROJECT</div><ul><li>PROJECT_ID (PK)</li><li>COMPANY_ID (FK)</li><li>PROJECT_NAME, SECTOR</li><li>START_DATE, END_DATE</li><li>PROJECT_VALUE</li><li>MILESTONE_1/2/3</li></ul></div>
+      <div class="table-card"><div class="tn">DOC_DOCUMENT</div><ul><li>DOC_ID (PK)</li><li>COMPANY_ID, OPP_ID (FK)</li><li>DOC_TYPE, DOC_TITLE</li><li>FILE_PATH, MIME_TYPE</li><li>VERSION, EXPIRY_DATE</li><li>IS_CONFIDENTIAL</li></ul></div>
+      <div class="table-card"><div class="tn">CRM_ACTIVITY</div><ul><li>ACTIVITY_ID (PK)</li><li>COMPANY_ID, CONTACT_ID (FK)</li><li>ACTIVITY_TYPE (CALL/MEET)</li><li>SUBJECT, OUTCOME</li><li>NEXT_ACTION_DATE</li><li>REMINDER_DATE</li></ul></div>
+      <div class="table-card"><div class="tn">ERP_USERS / ROLES</div><ul><li>USER_ID, ROLE_ID (PK)</li><li>USERNAME, EMAIL</li><li>PASSWORD_HASH (BCrypt)</li><li>LAST_LOGIN</li><li>ROLE_NAME, ROLE_DESC</li><li>IS_ACTIVE</li></ul></div>
+      <div class="table-card"><div class="tn">ERP_MODULE_PERMS</div><ul><li>ROLE_ID + MODULE_CODE</li><li>CAN_VIEW, CAN_CREATE</li><li>CAN_EDIT, CAN_DELETE</li><li>CAN_EXPORT</li><li>13 modules × 5 roles</li></ul></div>
+      <div class="table-card"><div class="tn">AUD_LOG</div><ul><li>LOG_ID (PK)</li><li>TABLE_NAME, RECORD_ID</li><li>ACTION (INSERT/UPDATE)</li><li>OLD_VALUES (CLOB JSON)</li><li>NEW_VALUES (CLOB JSON)</li><li>CHANGED_BY, IP_ADDRESS</li></ul></div>
+      <div class="table-card"><div class="tn">REF_LOOKUP</div><ul><li>LOOKUP_TYPE, CODE</li><li>Company types, segments</li><li>Opportunity statuses</li><li>Job statuses</li><li>All dropdown values</li><li>Seeded on install</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section id="roles" style="padding:90px 24px;background:var(--navy);">
+  <div class="section-inner">
+    <div class="section-label">Security</div>
+    <div class="section-title">Role-Based Access Control</div>
+    <div class="section-sub">JWT Bearer auth with 5 roles and per-module CRUD + Export permissions stored in Oracle.</div>
+    <div style="overflow-x:auto;margin-top:40px;">
+      <table class="roles-table">
+        <thead><tr><th>Role</th><th>Company</th><th>Opportunities</th><th>Jobs</th><th>Technology</th><th>Analytics</th><th>Users</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge-r r-sa">SuperAdmin</span></td><td>CRUD + Export</td><td>CRUD + Export</td><td>CRUD + Export</td><td>CRUD + Export</td><td>Full</td><td>Full</td></tr>
+          <tr><td><span class="badge-r r-a">Admin</span></td><td>CRUD + Export</td><td>CRUD + Export</td><td>CRUD + Export</td><td>CRUD + Export</td><td>Full</td><td>Limited</td></tr>
+          <tr><td><span class="badge-r r-bd">BDManager</span></td><td>View + Export</td><td>CRUD</td><td>CRU</td><td>View</td><td>Read</td><td>None</td></tr>
+          <tr><td><span class="badge-r r-an">Analyst</span></td><td>CRU + Export</td><td>View</td><td>CRUD</td><td>CRUD</td><td>Full</td><td>None</td></tr>
+          <tr><td><span class="badge-r r-v">Viewer</span></td><td>View only</td><td>View only</td><td>View only</td><td>View only</td><td>Read</td><td>None</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" style="padding:90px 24px;background:var(--navy2);">
+  <div class="section-inner">
+    <div class="section-label">Development Roadmap</div>
+    <div class="section-title">7-Phase Build Plan — 16 Weeks</div>
+    <div class="section-sub">From Oracle schema to full AI-powered intelligence platform.</div>
+    <div class="roadmap-grid">
+      <div class="phase-card"><div class="phase-num">Phase 1 · Weeks 1–3</div><div class="phase-title">Foundation</div><div class="phase-weeks">Oracle schema + .NET 8 setup + JWT auth</div><ul class="phase-list"><li>13-table DDL + seed data</li><li>JWT login + refresh</li><li>Swagger UI</li><li>Role permissions seeded</li></ul></div>
+      <div class="phase-card"><div class="phase-num">Phase 2 · Weeks 4–5</div><div class="phase-title">Company Master</div><div class="phase-weeks">Core module + frontend wiring</div><ul class="phase-list"><li>CRUD + pagination + filters</li><li>Grid + list view</li><li>Tech profile upsert</li><li>CSV export</li></ul></div>
+      <div class="phase-card"><div class="phase-num">Phase 3 · Weeks 6–7</div><div class="phase-title">Contacts & CRM</div><div class="phase-weeks">CRM activity + reminder engine</div><ul class="phase-list"><li>Contact CRUD</li><li>Activity log (call/email/meeting)</li><li>7-day reminder view</li><li>Follow-up timeline</li></ul></div>
+      <div class="phase-card"><div class="phase-num">Phase 4 · Weeks 8–9</div><div class="phase-title">BD Pipeline</div><div class="phase-weeks">Opportunities + Projects + Kanban</div><ul class="phase-list"><li>Opportunity Kanban board</li><li>Pipeline funnel chart</li><li>Project milestone tracker</li><li>Win rate analytics</li></ul></div>
+      <div class="phase-card"><div class="phase-num">Phase 5 · Weeks 10–11</div><div class="phase-title">Jobs & Suppliers</div><div class="phase-weeks">Career tracking + vendor management</div><ul class="phase-list"><li>Personal application tracking</li><li>Supplier audit workflow</li><li>Document upload + storage</li></ul></div>
+      <div class="phase-card"><div class="phase-num">Phase 6 · Weeks 12–13</div><div class="phase-title">Analytics & Reports</div><div class="phase-weeks">Live charts + Excel/PDF reports</div><ul class="phase-list"><li>Dashboard KPIs from Oracle views</li><li>8 pre-built reports</li><li>NPOI Excel + iTextSharp PDF</li></ul></div>
+      <div class="phase-card"><div class="phase-num">Phase 7 · Weeks 14–16</div><div class="phase-title">AI Integration</div><div class="phase-weeks">GPT-4o + ML models</div><ul class="phase-list"><li>Company URL summarizer</li><li>NLP job-skill matcher</li><li>Opportunity scoring (XGBoost)</li><li>Contract risk analyser</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- AI FEATURES -->
+<section id="ai" class="ai-section">
+  <div class="section-inner">
+    <div class="section-label">Future AI Integration</div>
+    <div class="section-title">8 Planned AI Features</div>
+    <div class="section-sub">Phase 7 will transform AeroERP from a data system into an intelligent aerospace BD co-pilot.</div>
+    <div class="ai-grid">
+      <div class="ai-card"><div class="ai-icon">🧠</div><div class="ai-title">Company Summarizer</div><div class="ai-desc">Input a company URL → GPT-4o extracts key intel, products, tech stack, hiring outlook and saves to the company record.</div><div class="ai-tech">GPT-4o + Playwright</div></div>
+      <div class="ai-card"><div class="ai-icon">🎯</div><div class="ai-title">Job-Skill Matcher</div><div class="ai-desc">Score your profile against any JD using TF-IDF cosine similarity. Surfaces best-fit roles across 47+ openings.</div><div class="ai-tech">Python + spaCy + scikit-learn</div></div>
+      <div class="ai-card"><div class="ai-icon">📉</div><div class="ai-title">Opportunity Scorer</div><div class="ai-desc">ML model predicts win probability based on company history, segment, value, and BD activity pattern.</div><div class="ai-tech">XGBoost + Oracle ML</div></div>
+      <div class="ai-card"><div class="ai-icon">📜</div><div class="ai-title">Contract Analyser</div><div class="ai-desc">Upload an NDA or RFQ → AI extracts key clauses, flags risks, summarises obligations.</div><div class="ai-tech">GPT-4o + RAG + LangChain</div></div>
+      <div class="ai-card"><div class="ai-icon">🔔</div><div class="ai-title">Competitor Alerts</div><div class="ai-desc">Daily automated crawl of competitor news → AI summary pushed as CRM activity with action recommendation.</div><div class="ai-tech">Newspaper3k + GPT-4o</div></div>
+      <div class="ai-card"><div class="ai-icon">🔍</div><div class="ai-title">Smart Search</div><div class="ai-desc">Natural language queries: "Defence companies using AI in Hyderabad with GET programme" → instant results.</div><div class="ai-tech">OpenAI Embeddings + FAISS</div></div>
+      <div class="ai-card"><div class="ai-icon">📊</div><div class="ai-title">Report Writer</div><div class="ai-desc">Generate narrative intelligence reports from raw Oracle data — sector analysis, BD summaries, hiring outlooks.</div><div class="ai-tech">GPT-4o + Handlebars</div></div>
+      <div class="ai-card"><div class="ai-icon">🧩</div><div class="ai-title">Skill Gap Analyser</div><div class="ai-desc">Compare your current skills against market demand across 58 companies — gap report with learning priorities.</div><div class="ai-tech">NLP + Oracle Analytics</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTHOR -->
+<section id="author" class="author-section">
+  <div class="section-inner">
+    <div class="section-label">Built By</div>
+    <div class="section-title" style="margin-bottom:32px">Author</div>
+    <div class="author-card">
+      <div class="author-avatar">MN</div>
+      <div style="flex:1">
+        <div class="author-name">Mahin Nandipa</div>
+        <div class="author-title">Fresher ML Engineer · Hyderabad, India</div>
+        <div class="author-tags">
+          <span class="atag">B.Tech Aerospace — VIT Bhopal</span>
+          <span class="atag">PG AI/ML — IIIT Hyderabad (TalentSprint × Accenture)</span>
+          <span class="atag">LLMs & RAG Pipelines</span>
+          <span class="atag">LoRA Fine-Tuning</span>
+          <span class="atag">FastAPI · LangChain · HuggingFace</span>
+          <span class="atag">Aerospace + AI/ML intersection</span>
+        </div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:700px;margin-bottom:18px;">
+          Aerospace engineer turned ML engineer — building at the intersection of defence tech, autonomous systems, and generative AI. 
+          AeroERP is a personal BD intelligence tool for navigating India's aerospace industry job market and business opportunities.
+        </div>
+        <div class="author-links">
+          <a href="https://github.com/mahin-aeroai" target="_blank"><i class="bi bi-github"></i> mahin-aeroai</a>
+          <a href="https://github.com/mahin-aeroai/AeroERP" target="_blank"><i class="bi bi-code-slash"></i> AeroERP Repo</a>
+          <a href="https://github.com/mahin-aeroai/Costing-ERP" target="_blank"><i class="bi bi-box"></i> SignERP</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>AeroERP v1.0 · Built June 2025 · <a href="https://github.com/mahin-aeroai/AeroERP" target="_blank">github.com/mahin-aeroai/AeroERP</a> · .NET 8 + Oracle + Bootstrap 5</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
