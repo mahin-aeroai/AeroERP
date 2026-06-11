@@ -1,14 +1,14 @@
 // ================================================================
-// AeroERP — API Service Layer (api.js)
+// AeroLens — API Service Layer (api.js)
 // All REST calls with JWT auth, error handling, and retry logic
 // ================================================================
 
 const AeroAPI = (() => {
-  const BASE = 'https://api.aeroerp.local/api';
+  const BASE = 'https://api.aerolens.local/api';
 
   // ── AUTH ────────────────────────────────────────────────────
   function getToken() {
-    return localStorage.getItem('aeroerp_token') || '';
+    return localStorage.getItem('aerolens_token') || '';
   }
   function getHeaders(isMultipart = false) {
     const h = { 'Authorization': `Bearer ${getToken()}` };

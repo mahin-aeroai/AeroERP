@@ -1,4 +1,4 @@
-# AeroERP — Complete Project Setup Guide
+# AeroLens — Complete Project Setup Guide
 ## India Aerospace Industry Intelligence ERP
 ### Stack: .NET 8 Web API + Oracle DB + Bootstrap 5.3 + Chart.js
 
@@ -13,7 +13,7 @@
 | 3 | `frontend/login.html` | JWT login page with radar animation |
 | 4 | `frontend/index.html` | Complete ERP shell — Dashboard + 10 modules |
 | 5 | `frontend/js/api.js` | API service layer — all 60+ endpoints wrapped |
-| 6 | `backend/AeroERP_API_Complete.cs` | All controllers, endpoint map, JWT auth structure |
+| 6 | `backend/AeroLens_API_Complete.cs` | All controllers, endpoint map, JWT auth structure |
 | 7 | `backend/CompanyService.cs` | Full Dapper + Oracle: CompanyService, DashboardService, AuthService, AuditService |
 | 8 | `docs/ARCHITECTURE.md` | ERD, folder structure, roles matrix, roadmap, AI integration table |
 | 9 | `docs/NUGET.md` | This file — NuGet packages, .csproj, quick-start |
@@ -24,10 +24,10 @@
 
 ```bash
 # Create solution
-dotnet new sln -n AeroERP
-dotnet new webapi -n AeroERP.API --framework net8.0
-dotnet sln add AeroERP.API
-cd AeroERP.API
+dotnet new sln -n AeroLens
+dotnet new webapi -n AeroLens.API --framework net8.0
+dotnet sln add AeroLens.API
+cd AeroLens.API
 ```
 
 ---
@@ -40,8 +40,8 @@ cd AeroERP.API
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>AeroERP.API</AssemblyName>
-    <RootNamespace>AeroERP.API</RootNamespace>
+    <AssemblyName>AeroLens.API</AssemblyName>
+    <RootNamespace>AeroLens.API</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -79,7 +79,7 @@ cd AeroERP.API
 ## 3. INSTALL ALL NUGET (CLI)
 
 ```bash
-cd AeroERP.API
+cd AeroLens.API
 
 dotnet add package Oracle.ManagedDataAccess.Core --version 23.5.1
 dotnet add package Dapper --version 2.1.35
@@ -102,16 +102,16 @@ dotnet add package Serilog.Sinks.File --version 5.0.0
 ```json
 {
   "ConnectionStrings": {
-    "OracleDb": "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XEPDB1)));User Id=AEROERP;Password=Aero@2025;"
+    "OracleDb": "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XEPDB1)));User Id=AEROLENS;Password=Aero@2025;"
   },
   "Jwt": {
-    "Key":         "AeroERP_SuperSecretKey_2025_Mahin_Aerospace_IIITH!@#$",
-    "Issuer":      "AeroERP",
-    "Audience":    "AeroERPClients",
+    "Key":         "AeroLens_SuperSecretKey_2025_Mahin_Aerospace_IIITH!@#$",
+    "Issuer":      "AeroLens",
+    "Audience":    "AeroLensClients",
     "ExpiryHours": 8
   },
   "FileStorage": {
-    "BasePath":    "C:\\AeroERP\\Documents",
+    "BasePath":    "C:\\AeroLens\\Documents",
     "MaxFileMB":   10
   },
   "RateLimit": {
@@ -129,13 +129,13 @@ dotnet add package Serilog.Sinks.File --version 5.0.0
 
 ```sql
 -- As SYSDBA:
-CREATE USER AEROERP IDENTIFIED BY "Aero@2025"
+CREATE USER AEROLENS IDENTIFIED BY "Aero@2025"
   DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
-GRANT CONNECT, RESOURCE, CREATE VIEW TO AEROERP;
-GRANT CREATE SEQUENCE, CREATE TABLE, CREATE PROCEDURE TO AEROERP;
-ALTER USER AEROERP QUOTA UNLIMITED ON USERS;
+GRANT CONNECT, RESOURCE, CREATE VIEW TO AEROLENS;
+GRANT CREATE SEQUENCE, CREATE TABLE, CREATE PROCEDURE TO AEROLENS;
+ALTER USER AEROLENS QUOTA UNLIMITED ON USERS;
 
--- Then run as AEROERP:
+-- Then run as AEROLENS:
 -- @01_schema_ddl.sql
 -- @02_seed_data.sql
 ```
@@ -145,7 +145,7 @@ ALTER USER AEROERP QUOTA UNLIMITED ON USERS;
 ## 6. PROGRAM.CS — COMPLETE
 
 ```csharp
-using AeroERP.API.Services;
+using AeroLens.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Oracle.ManagedDataAccess.Client;
@@ -154,7 +154,7 @@ using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/aeroerp-.log", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("logs/aerolens-.log", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -197,13 +197,13 @@ builder.Services.AddAuthorization(opt => {
 
 // ── CORS ─────────────────────────────────────────────────────
 builder.Services.AddCors(opt => opt.AddPolicy("AeroPolicy", p =>
-    p.WithOrigins("http://localhost:5500","http://127.0.0.1:5500","https://aeroerp.in")
+    p.WithOrigins("http://localhost:5500","http://127.0.0.1:5500","https://aerolens.in")
      .AllowAnyMethod().AllowAnyHeader()));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
-    c.SwaggerDoc("v1", new() { Title = "AeroERP API", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "AeroLens API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme {
         Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http, Scheme = "bearer",
         BearerFormat = "JWT", Description = "Enter JWT token"
@@ -214,7 +214,7 @@ var app = builder.Build();
 
 app.UseSerilogRequestLogging();
 app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AeroERP v1"));
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AeroLens v1"));
 app.UseCors("AeroPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
@@ -227,7 +227,7 @@ app.Run();
 ## 7. DEVELOPMENT PHASE CHECKLIST
 
 ### Phase 1 — Foundation (Week 1–2)
-- [ ] Oracle 21c XE install → create AEROERP user
+- [ ] Oracle 21c XE install → create AEROLENS user
 - [ ] Run `01_schema_ddl.sql` → verify all 13 tables created
 - [ ] Run `02_seed_data.sql` → verify 20 companies + tech profiles
 - [ ] .NET 8 VS2022 solution → install all NuGet packages
@@ -277,8 +277,8 @@ app.Run();
 ## 8. FOLDER STRUCTURE (quick reference)
 
 ```
-AeroERP/
-├── AeroERP.sln
+AeroLens/
+├── AeroLens.sln
 ├── sql/
 │   ├── 01_schema_ddl.sql
 │   └── 02_seed_data.sql
@@ -291,7 +291,7 @@ AeroERP/
 │   └── js/
 │       └── api.js
 └── backend/
-    ├── AeroERP_API_Complete.cs  (controllers + endpoint map)
+    ├── AeroLens_API_Complete.cs  (controllers + endpoint map)
     └── CompanyService.cs        (full service implementations)
 ```
 

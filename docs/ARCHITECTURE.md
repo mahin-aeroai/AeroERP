@@ -1,4 +1,4 @@
-# AeroERP — Complete System Architecture & Development Roadmap
+# AeroLens — Complete System Architecture & Development Roadmap
 ## India Aerospace Industry Intelligence ERP
 ### Author: Mahin | Stack: HTML5 + Bootstrap + .NET 8 Web API + Oracle DB
 
@@ -19,7 +19,7 @@
 └─────────────────┬────────────────────────────────────────────┘
                   │
 ┌─────────────────▼────────────────────────────────────────────┐
-│           .NET 8 WEB API (AeroERP.API)                        │
+│           .NET 8 WEB API (AeroLens.API)                        │
 │  ┌──────────────┐  ┌─────────────────┐  ┌──────────────────┐ │
 │  │ Controllers  │  │    Services     │  │    Middleware    │ │
 │  │ (10 modules) │  │  (Business Lgc) │  │ JWT Auth, CORS,  │ │
@@ -106,9 +106,9 @@ Cardinalities:
 ## 3. VISUAL STUDIO .NET 8 FOLDER STRUCTURE
 
 ```
-AeroERP.sln
+AeroLens.sln
 │
-├── AeroERP.API/                        ← ASP.NET Core 8 Web API
+├── AeroLens.API/                        ← ASP.NET Core 8 Web API
 │   ├── Controllers/
 │   │   ├── AuthController.cs
 │   │   ├── CompanyController.cs
@@ -186,11 +186,11 @@ AeroERP.sln
 │   ├── appsettings.Development.json
 │   └── Program.cs
 │
-├── AeroERP.Frontend/                   ← Static frontend (or separate deploy)
+├── AeroLens.Frontend/                   ← Static frontend (or separate deploy)
 │   ├── index.html                      ← Main ERP shell
 │   ├── login.html
 │   ├── css/
-│   │   └── aeroerp.css
+│   │   └── aerolens.css
 │   ├── js/
 │   │   ├── app.js                      ← Main app logic
 │   │   ├── api.js                      ← API call wrappers
@@ -206,7 +206,7 @@ AeroERP.sln
 │   └── assets/
 │       └── logo.svg
 │
-└── AeroERP.Tests/
+└── AeroLens.Tests/
     ├── UnitTests/
     │   ├── CompanyServiceTests.cs
     │   └── OpportunityServiceTests.cs
@@ -248,7 +248,7 @@ C=Create, R=Read, U=Update, D=Delete, E=Export, DL=Download
 3. Generate JWT: { userId, username, role, email }
    Signed with HS256 + secret key, expires 8h
    ↓
-4. Client stores in localStorage: aeroerp_token
+4. Client stores in localStorage: aerolens_token
    ↓
 5. All subsequent requests: Authorization: Bearer <token>
    ↓
@@ -262,7 +262,7 @@ C=Create, R=Read, U=Update, D=Delete, E=Export, DL=Download
 {
   "userId": "42",
   "username": "mahin",
-  "email": "mahin@aeroerp.in",
+  "email": "mahin@aerolens.in",
   "role": "Analyst",
   "iat": 1749600000,
   "exp": 1749628800
@@ -368,7 +368,7 @@ REFRESH FAST ON COMMIT
 AS SELECT * FROM V_DASHBOARD_KPI;
 
 -- Statistics for query optimizer
-EXEC DBMS_STATS.GATHER_SCHEMA_STATS('AEROERP');
+EXEC DBMS_STATS.GATHER_SCHEMA_STATS('AEROLENS');
 ```
 
 ---

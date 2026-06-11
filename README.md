@@ -1,15 +1,15 @@
-# ✈ AeroERP — India Aerospace Industry Intelligence ERP
+# 🔭 AeroLens — India Aerospace Industry Intelligence Platform
 
-> A free, open-source **Aerospace Industry Intelligence & Business Development platform** for India  
+> A free, open-source **Aerospace Industry Intelligence Platform** — your lens into India's entire aerospace ecosystem.  
 > covering Defence, Space, UAV, Avionics, Manufacturing & Software companies.
 
 ## 🌐 Live Links
 
 | | URL |
 |---|---|
-| 🚀 **Live Intelligence Database** | **https://aeroerp-production.up.railway.app/data.html** |
-| 🏠 **Landing Page** | **https://mahin-aeroai.github.io/AeroERP/** |
-| 💻 **GitHub Repo** | **https://github.com/mahin-aeroai/AeroERP** |
+| 🚀 **Live Intelligence Database** | **https://aerolens-production.up.railway.app/data.html** |
+| 🏠 **Landing Page** | **https://mahin-aeroai.github.io/AeroLens/** |
+| 💻 **GitHub Repo** | **https://github.com/mahin-aeroai/AeroLens** |
 
 ---
 
@@ -75,7 +75,7 @@
 ## 📁 Repository Structure
 
 ```
-AeroERP/
+AeroLens/
 ├── index.html              ← Public landing page (GitHub Pages)
 ├── data.html               ← Live intelligence database (87 companies)
 ├── frontend/
@@ -85,7 +85,7 @@ AeroERP/
 │   ├── 01_schema_ddl.sql   ← Oracle DDL — 13 tables
 │   └── 02_seed_data.sql    ← Seed data
 ├── backend/
-│   ├── AeroERP_API_Complete.cs
+│   ├── AeroLens_API_Complete.cs
 │   └── CompanyService.cs
 └── docs/
     ├── ARCHITECTURE.md
@@ -98,7 +98,7 @@ AeroERP/
 
 ```bash
 # 1. Clone
-git clone https://github.com/mahin-aeroai/AeroERP.git
+git clone https://github.com/mahin-aeroai/AeroLens.git
 
 # 2. Open data.html in browser — works immediately, no server needed
 open data.html
@@ -117,8 +117,8 @@ PG Certificate AI & ML — IIIT Hyderabad (TalentSprint × Accenture)
 📍 Hyderabad, India  
 
 [![GitHub](https://img.shields.io/badge/GitHub-mahin--aeroai-blue?logo=github)](https://github.com/mahin-aeroai)
-[![Live Demo](https://img.shields.io/badge/Live-AeroERP_Database-green)](https://aeroerp-production.up.railway.app/data.html)
+[![Live Demo](https://img.shields.io/badge/Live-AeroLens_Database-green)](https://aerolens-production.up.railway.app/data.html)
 
 ---
 
-*AeroERP v1.0 — Built June 2025 — Open Source — Free Forever*
+*AeroLens v1.0 — Built June 2025 — Open Source — Free Forever*
