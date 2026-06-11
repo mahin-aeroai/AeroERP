@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "India Aerospace Industry Intelligence ERP",
   "scripts": {
-    "start": "npx serve . -p ${PORT:-3000}"
+    "start": "serve . -p ${PORT:-3000}"
   },
   "dependencies": {
     "serve": "^14.2.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
